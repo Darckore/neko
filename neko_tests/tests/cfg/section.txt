@@ -1,0 +1,6 @@
+.section
+
+option{ op1 }
+option{ op2, 1, true }
+
+option{ after_empty }

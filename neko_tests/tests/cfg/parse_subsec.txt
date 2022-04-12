@@ -1,0 +1,19 @@
+global{ 0 }
+
+.section
+{
+  local{ 1 }
+  .subsection
+  {
+    .inner
+    {
+      local{ 3 }
+    }
+    local{ 2 }
+  }
+}
+
+.another
+{
+  local{ 4 }
+}
