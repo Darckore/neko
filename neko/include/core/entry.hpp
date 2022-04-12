@@ -10,6 +10,7 @@
 //
 
 #pragma once
+#include "core/definitions.hpp"
 #include "game/base_game.hpp"
 
 namespace neko_game
