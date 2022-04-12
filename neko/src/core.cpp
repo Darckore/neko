@@ -12,6 +12,7 @@ namespace neko
     if (auto&& inst = instance())
     {
       inst->run();
+      return;
     }
 
     logger::error("Engine startup failed");

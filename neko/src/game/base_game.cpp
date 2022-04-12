@@ -25,7 +25,7 @@ namespace neko
 
   bool base_game::init() noexcept
   {
-    if (!before_run())
+    if (!load())
     {
       logger::error("Failed to load the game");
       return false;
