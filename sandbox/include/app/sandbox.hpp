@@ -1,5 +1,5 @@
 #pragma once
-#include "game/base_game.hpp"
+#include "core/entry.hpp"
 
 namespace neko_game
 {
