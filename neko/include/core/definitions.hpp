@@ -1,4 +1,5 @@
 #pragma once
+#include "logger/logger.hpp"
 
 namespace neko
 {
@@ -15,3 +16,9 @@ namespace neko
   template <typename T>
   using pointer = std::unique_ptr<T>;
 }
+
+#ifndef NDEBUG
+  #define TRACE(fmt, ...) logger::trace(fmt, __VA_ARGS__)
+#else
+  #define TRACE(fmt, ...)
+#endif
