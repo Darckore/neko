@@ -18,7 +18,34 @@ namespace neko
 }
 
 #ifndef NDEBUG
-  #define TRACE(fmt, ...) logger::trace(fmt, __VA_ARGS__)
+  #define NEK_TRACE(fmt, ...) logger::trace(fmt, __VA_ARGS__)
 #else
-  #define TRACE(fmt, ...)
+  #define NEK_TRACE(fmt, ...)
+#endif
+
+#ifndef NDEBUG
+namespace neko
+{
+  inline bool assertion(bool condition,
+                        std::string_view condStr,
+                        std::source_location loc = std::source_location::current())
+  {
+    if (condition)
+      return true;
+
+    constexpr auto fmt = "Assertion '{}' in {} failed at '{}':{}"sv;
+    NEK_TRACE(fmt, condStr,
+              loc.function_name(),
+              loc.file_name(),
+              loc.line());
+
+    return false;
+  }
+}
+#endif
+
+#ifndef NDEBUG
+  #define NEK_ASSERT(cond) BREAK_ON(!neko::assertion(static_cast<bool>(cond), #cond))
+#else
+  #define NEK_ASSERT(cond)
 #endif
