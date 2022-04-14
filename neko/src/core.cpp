@@ -1,7 +1,7 @@
 #include "core/core.hpp"
 #include "core/sys_registry.hpp"
 #include "game/base_game.hpp"
-#include "core/logger/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace neko
 {
