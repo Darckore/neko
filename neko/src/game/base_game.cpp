@@ -15,7 +15,7 @@ namespace neko
   {
     logger::init();
     logger::note("Initialising the game");
-    if (!core::create(*this))
+    if (!core::create<core>(*this))
     {
       logger::error("Engine initialisation failed");
     }
