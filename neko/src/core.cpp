@@ -52,6 +52,13 @@ namespace neko
   }
   void core::loop() noexcept
   {
+    while (true)
+    {
+      if (!systems::draw_target().update())
+      {
+        break;
+      }
+    }
   }
   void core::quit() noexcept
   {

@@ -9,10 +9,18 @@ namespace neko
     concept engine_system = std::is_base_of_v<singleton<System>, System>;
   }
 
+  class draw_target;
+
   class systems
   {
   public:
     CLASS_SPECIALS_NONE(systems);
+
+  public:
+    static decltype(auto) draw_target() noexcept
+    {
+      return singleton<neko::draw_target>::get();
+    }
 
   private:
     friend class core;

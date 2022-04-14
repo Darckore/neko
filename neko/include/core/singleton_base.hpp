@@ -24,6 +24,7 @@ namespace neko
   public:
     static Derived& get() noexcept
     {
+      NEK_ASSERT(instance());
       return *instance();
     }
 
