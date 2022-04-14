@@ -1,6 +1,6 @@
 #pragma once
 #include "platform/support/windows/win_includes.hpp"
-#include "core/draw_target.hpp"
+#include "graphics/draw_target.hpp"
 
 namespace neko::platform
 {

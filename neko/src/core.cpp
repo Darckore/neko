@@ -1,6 +1,6 @@
 #include "core/core.hpp"
-#include "core/draw_target.hpp"
 #include "core/sys_registry.hpp"
+#include "graphics/draw_target.hpp"
 #include "game/base_game.hpp"
 #include "logger/logger.hpp"
 
