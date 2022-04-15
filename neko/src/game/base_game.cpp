@@ -1,5 +1,5 @@
 #include "game/base_game.hpp"
-#include "core/logger/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace neko
 {
@@ -15,7 +15,7 @@ namespace neko
   {
     logger::init();
     logger::note("Initialising the game");
-    if (!core::create(*this))
+    if (!core::create<core>(*this))
     {
       logger::error("Engine initialisation failed");
     }
@@ -25,7 +25,7 @@ namespace neko
 
   bool base_game::init() noexcept
   {
-    if (!before_run())
+    if (!load())
     {
       logger::error("Failed to load the game");
       return false;

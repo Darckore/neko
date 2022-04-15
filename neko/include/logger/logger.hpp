@@ -7,10 +7,11 @@ namespace neko
   public:
     enum class level : std::uint8_t
     {
-      lOff,
-      lFatal,
-      lWarning,
-      lNote
+      off,
+      err,
+      warn,
+      msg,
+      dbg
     };
 
     using enum level;
@@ -26,12 +27,13 @@ namespace neko
     static void prologue(level lvl) noexcept
     {
       constexpr std::array severities {
-        "fatal"sv,
-        "warning"sv,
-        "note"sv
+        "[error]  "sv,
+        "[warning]"sv,
+        "[note]   "sv,
+        "[trace]  "sv
       };
 
-      constexpr auto fmt = "=={1:%F, %H:%M:%OS}== [{0:}]: "sv;
+      constexpr auto fmt = "=={1:%F, %H:%M:%OS}== {0:}: "sv;
       const auto idx = static_cast<std::size_t>(lvl) - 1;
       const auto zt = std::chrono::zoned_time{
         std::chrono::current_zone(),
@@ -95,22 +97,30 @@ namespace neko
       m_fname = std::move(fname);
     }
 
+  #ifndef NDEBUG
+    template <typename ...Args>
+    static void trace(fmt_type fmt, Args&& ...args) noexcept
+    {
+      message(dbg, fmt, std::forward<Args>(args)...);
+    }
+  #endif
+
     template <typename ...Args>
     static void note(fmt_type fmt, Args&& ...args) noexcept
     {
-      message(lNote, fmt, std::forward<Args>(args)...);
+      message(msg, fmt, std::forward<Args>(args)...);
     }
 
     template <typename ...Args>
     static void warning(fmt_type fmt, Args&& ...args) noexcept
     {
-      message(lWarning, fmt, std::forward<Args>(args)...);
+      message(warn, fmt, std::forward<Args>(args)...);
     }
 
     template <typename ...Args>
     static void error(fmt_type fmt, Args&& ...args) noexcept
     {
-      message(lFatal, fmt, std::forward<Args>(args)...);
+      message(err, fmt, std::forward<Args>(args)...);
     }
 
   private:
@@ -122,9 +132,9 @@ namespace neko
 
     inline static level m_lvl{
     #ifndef NDEBUG
-      lNote
+      dbg
     #else
-      lFatal
+      err
     #endif
     };
   };
