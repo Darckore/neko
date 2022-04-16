@@ -7,6 +7,7 @@ namespace neko
 
   base_game::~base_game() noexcept
   {
+    NEK_TRACE("Exiting the game");
     core::shutdown();
     logger::shutdown();
   }
@@ -14,24 +15,32 @@ namespace neko
   base_game::base_game() noexcept
   {
     logger::init();
+    NEK_TRACE("Logger ready");
     logger::note("Initialising the game");
     if (!core::create<core>(*this))
     {
       logger::error("Engine initialisation failed");
     }
+  #ifndef NDEBUG
+    else
+    {
+      NEK_TRACE("Done core init");
+    }
+  #endif
   }
 
   // Private members
 
   bool base_game::init() noexcept
   {
+    NEK_TRACE("Game init");
     if (!load())
     {
       logger::error("Failed to load the game");
       return false;
     }
 
-    update(time_type{});
+    NEK_TRACE("Done game init");
     return true;
   }
   void base_game::update(time_type dt) noexcept

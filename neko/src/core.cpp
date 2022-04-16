@@ -48,6 +48,7 @@ namespace neko
       return;
     }
 
+    NEK_TRACE("Starting main loop");
     loop();
   }
   void core::loop() noexcept
@@ -58,10 +59,13 @@ namespace neko
       {
         break;
       }
+
+      m_game.update({});
     }
   }
   void core::quit() noexcept
   {
+    logger::note("Shutting down");
     systems::shutdown_system<draw_target>();
   }
 }
