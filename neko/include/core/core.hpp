@@ -12,7 +12,6 @@ namespace neko
 
   private:
     using game_type = base_game;
-    using path_type = fsys::path;
     friend class singleton<core>;
 
   public:

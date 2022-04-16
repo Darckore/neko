@@ -42,7 +42,7 @@ namespace neko
       logger::error("Unable to init configuration system");
     }
 
-    if (!systems::config().load_file("root.cfg"))
+    if (!systems::config().load_file("root", "root.cfg"))
     {
       logger::error("Unable to open root config file");
     }

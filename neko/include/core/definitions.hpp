@@ -15,7 +15,66 @@ namespace neko
 
   template <typename T>
   using pointer = std::unique_ptr<T>;
+
+  class hashed_string
+  {
+  public:
+    using hash_type = utils::detail::max_int_t;
+
+  public:
+    CLASS_SPECIALS_NODEFAULT(hashed_string);
+
+    constexpr hashed_string(std::string_view str) noexcept :
+      m_hash{ utils::hash(str) }
+    {}
+
+    constexpr hashed_string(const char* str) noexcept :
+      hashed_string{ std::string_view{ str } }
+    {}
+
+    constexpr hashed_string(const char* str, std::size_t len) noexcept :
+      hashed_string{ std::string_view{ str, len } }
+    {}
+
+    constexpr hashed_string(const std::string& str) noexcept :
+      hashed_string{ std::string_view{ str } }
+    {}
+
+    constexpr auto operator*() const noexcept
+    {
+      return m_hash;
+    }
+
+    constexpr bool operator==(const hashed_string& other) const noexcept = default;
+
+  private:
+    hash_type m_hash{};
+  };
+
+  [[nodiscard]] constexpr auto operator"" _nhs(const char* s, std::size_t len) noexcept
+  {
+    return hashed_string{ s, len };
+  }
+
+  using path_type = fsys::path;
+
+  struct path_hasher
+  {
+    auto operator()(const path_type& p) const noexcept
+    {
+      return fsys::hash_value(p);
+    }
+  };
 }
+
+template <>
+struct std::hash<neko::hashed_string>
+{
+  constexpr auto operator()(const neko::hashed_string& s) const noexcept
+  {
+    return *s;
+  }
+};
 
 #ifndef NDEBUG
   #define NEK_TRACE(fmt, ...) logger::trace(fmt, __VA_ARGS__)
