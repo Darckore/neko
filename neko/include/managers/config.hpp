@@ -18,14 +18,15 @@ namespace neko
     using store_type = std::unordered_map<key_type, cfg_type>;
 
   public:
-    CLASS_SPECIALS_NONE_CUSTOM(conf_manager);
+    CLASS_SPECIALS_NONE(conf_manager);
 
     ~conf_manager() noexcept;
 
   private:
-    conf_manager() noexcept;
+    explicit conf_manager(const path_type& root) noexcept;
 
   public:
+    bool load_file(path_type fname) noexcept;
 
   private:
     store_type m_storage;

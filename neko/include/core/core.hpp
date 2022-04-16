@@ -12,6 +12,7 @@ namespace neko
 
   private:
     using game_type = base_game;
+    using path_type = fsys::path;
     friend class singleton<core>;
 
   public:
@@ -20,7 +21,7 @@ namespace neko
     ~core() noexcept;
 
   private:
-    explicit core(game_type& game) noexcept;
+    core(game_type& game, const path_type& cfgRoot) noexcept;
 
   private:
     void run() noexcept;

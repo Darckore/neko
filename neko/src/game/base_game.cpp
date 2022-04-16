@@ -1,4 +1,5 @@
 #include "game/base_game.hpp"
+#include "managers/sys_registry.hpp"
 #include "managers/logger.hpp"
 #include "managers/config.hpp"
 
@@ -17,8 +18,9 @@ namespace neko
   {
     logger::init();
     NEK_TRACE("Logger ready");
+
     logger::note("Initialising the game");
-    if (!core::create<core>(*this))
+    if (!core::create<core>(*this, "data"))
     {
       logger::error("Engine initialisation failed");
     }

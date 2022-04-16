@@ -34,9 +34,18 @@ namespace neko
     quit();
   }
 
-  core::core(game_type& game) noexcept :
+  core::core(game_type& game, const path_type& cfgRoot) noexcept :
     m_game{ game }
   {
+    if (!systems::init_system<conf_manager>(cfgRoot))
+    {
+      logger::error("Unable to init configuration system");
+    }
+
+    if (!systems::config().load_file("root.cfg"))
+    {
+      logger::error("Unable to open root config file");
+    }
   }
 
   // Private members

@@ -40,6 +40,12 @@ namespace neko
       return singleton<Sys>::template create<Derived>(std::forward<Args>(args)...);
     }
 
+    template <detail::engine_system Sys, typename ...Args>
+    static bool init_system(Args&& ...args) noexcept
+    {
+      return init_system<Sys, Sys>(std::forward<Args>(args)...);
+    }
+
     template <detail::engine_system Sys>
     static void shutdown_system() noexcept
     {
