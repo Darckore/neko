@@ -1,8 +1,9 @@
 #include "core/core.hpp"
-#include "core/sys_registry.hpp"
+#include "managers/sys_registry.hpp"
 #include "graphics/draw_target.hpp"
 #include "game/base_game.hpp"
 #include "managers/logger.hpp"
+#include "managers/config.hpp"
 
 #ifdef _WIN32
   #include "windows/window.hpp"

@@ -1,5 +1,7 @@
 #pragma once
 #include "core/singleton_base.hpp"
+#include "graphics/draw_target.hpp"
+#include "managers/config.hpp"
 
 namespace neko
 {
@@ -10,6 +12,7 @@ namespace neko
   }
 
   class draw_target;
+  class conf_manager;
 
   class systems
   {
@@ -20,6 +23,11 @@ namespace neko
     static decltype(auto) draw_target() noexcept
     {
       return singleton<neko::draw_target>::get();
+    }
+
+    static decltype(auto) config() noexcept
+    {
+      return singleton<neko::conf_manager>::get();
     }
 
   private:
