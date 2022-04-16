@@ -1,5 +1,7 @@
 #pragma once
 #include "core/singleton_base.hpp"
+#include "graphics/draw_target.hpp"
+#include "managers/config.hpp"
 
 namespace neko
 {
@@ -10,6 +12,7 @@ namespace neko
   }
 
   class draw_target;
+  class conf_manager;
 
   class systems
   {
@@ -22,6 +25,11 @@ namespace neko
       return singleton<neko::draw_target>::get();
     }
 
+    static decltype(auto) config() noexcept
+    {
+      return singleton<neko::conf_manager>::get();
+    }
+
   private:
     friend class core;
 
@@ -30,6 +38,12 @@ namespace neko
     static bool init_system(Args&& ...args) noexcept
     {
       return singleton<Sys>::template create<Derived>(std::forward<Args>(args)...);
+    }
+
+    template <detail::engine_system Sys, typename ...Args>
+    static bool init_system(Args&& ...args) noexcept
+    {
+      return init_system<Sys, Sys>(std::forward<Args>(args)...);
     }
 
     template <detail::engine_system Sys>

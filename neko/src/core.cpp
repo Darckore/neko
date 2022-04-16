@@ -1,8 +1,9 @@
 #include "core/core.hpp"
-#include "core/sys_registry.hpp"
+#include "managers/sys_registry.hpp"
 #include "graphics/draw_target.hpp"
 #include "game/base_game.hpp"
-#include "logger/logger.hpp"
+#include "managers/logger.hpp"
+#include "managers/config.hpp"
 
 #ifdef _WIN32
   #include "windows/window.hpp"
@@ -33,9 +34,18 @@ namespace neko
     quit();
   }
 
-  core::core(game_type& game) noexcept :
+  core::core(game_type& game, const path_type& cfgRoot) noexcept :
     m_game{ game }
   {
+    if (!systems::init_system<conf_manager>(cfgRoot))
+    {
+      logger::error("Unable to init configuration system");
+    }
+
+    if (!systems::config().load_file("root", "root.cfg"))
+    {
+      logger::error("Unable to open root config file");
+    }
   }
 
   // Private members
@@ -48,6 +58,7 @@ namespace neko
       return;
     }
 
+    NEK_TRACE("Starting main loop");
     loop();
   }
   void core::loop() noexcept
@@ -58,10 +69,13 @@ namespace neko
       {
         break;
       }
+
+      m_game.update({});
     }
   }
   void core::quit() noexcept
   {
+    logger::note("Shutting down");
     systems::shutdown_system<draw_target>();
   }
 }

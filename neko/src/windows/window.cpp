@@ -1,6 +1,6 @@
 #include "windows/window.hpp"
-#include "core/sys_registry.hpp"
-#include "logger/logger.hpp"
+#include "managers/sys_registry.hpp"
+#include "managers/logger.hpp"
 
 namespace neko::platform
 {
@@ -61,6 +61,7 @@ namespace neko::platform
 
         if (!RegisterClassEx(&wc))
         {
+          NEK_TRACE("RegisterClassEx failed with code {}", GetLastError());
           return decltype(inst_handle){};
         }
 
@@ -128,6 +129,7 @@ namespace neko::platform
 
   void window::close() noexcept
   {
+    NEK_TRACE("Closing window");
     using detail::wnd_helper;
 
     auto hwnd = handle();
@@ -144,6 +146,7 @@ namespace neko::platform
   {
     if (!*this)
     {
+      NEK_TRACE("Window is about to close");
       return false;
     }
 
@@ -171,6 +174,8 @@ namespace neko::platform
 
   void window::init() noexcept
   {
+    NEK_TRACE("Window init");
+
   #ifdef NDEBUG
     ShowWindow(GetConsoleWindow(), SW_HIDE);
   #endif
@@ -178,14 +183,17 @@ namespace neko::platform
     using detail::wnd_helper;
     auto className   = wnd_helper::windowClass.data();
     auto inst_handle = wnd_helper::make_wnd_class(className);
+    NEK_TRACE("Window class {}", wnd_helper::windowClass);
     if (!inst_handle)
     {
-      logger::error("Unable to register window class '{}'", wnd_helper::windowClass);
+      logger::error("Unable to register window class");
       return;
     }
 
+    NEK_TRACE("Window class registered");
     auto [posX, posY, width, height] = wnd_helper::calc_size();
     m_size = { width, height };
+    NEK_TRACE("Window size: [{}, {}]", width, height);
     auto handle = CreateWindow(
       className,
       nullptr,
@@ -202,11 +210,13 @@ namespace neko::platform
       return;
     }
 
+    NEK_TRACE("Window created");
     SetWindowPos(handle, HWND_TOP, posX, posY, width, height,
                  SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 
     ShowWindow(handle, SW_SHOW);
     UpdateWindow(handle);
     m_handle = reinterpret_cast<handle_type>(handle);
+    NEK_TRACE("Done init window");
   }
 }
