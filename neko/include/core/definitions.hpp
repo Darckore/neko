@@ -1,5 +1,5 @@
 #pragma once
-#include "logger/logger.hpp"
+#include "managers/logger.hpp"
 
 namespace neko
 {

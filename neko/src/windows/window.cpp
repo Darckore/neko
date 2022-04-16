@@ -1,6 +1,6 @@
 #include "windows/window.hpp"
 #include "core/sys_registry.hpp"
-#include "logger/logger.hpp"
+#include "managers/logger.hpp"
 
 namespace neko::platform
 {

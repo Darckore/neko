@@ -2,7 +2,7 @@
 #include "core/sys_registry.hpp"
 #include "graphics/draw_target.hpp"
 #include "game/base_game.hpp"
-#include "logger/logger.hpp"
+#include "managers/logger.hpp"
 
 #ifdef _WIN32
   #include "windows/window.hpp"

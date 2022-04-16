@@ -1,5 +1,5 @@
 #include "game/base_game.hpp"
-#include "logger/logger.hpp"
+#include "managers/logger.hpp"
 
 namespace neko
 {
