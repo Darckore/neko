@@ -1,7 +1,16 @@
 #include "core/core.hpp"
-#include "core/sys_registry.hpp"
+#include "managers/sys_registry.hpp"
+#include "graphics/draw_target.hpp"
 #include "game/base_game.hpp"
-#include "core/logger/logger.hpp"
+#include "managers/logger.hpp"
+#include "managers/config.hpp"
+
+#ifdef _WIN32
+  #include "windows/window.hpp"
+  using surface_type = neko::platform::window;
+#else
+  static_assert(false, "Platform not supported");
+#endif
 
 namespace neko
 {
@@ -12,6 +21,7 @@ namespace neko
     if (auto&& inst = instance())
     {
       inst->run();
+      return;
     }
 
     logger::error("Engine startup failed");
@@ -24,21 +34,48 @@ namespace neko
     quit();
   }
 
-  core::core(game_type& game) noexcept :
+  core::core(game_type& game, const path_type& cfgRoot) noexcept :
     m_game{ game }
   {
+    if (!systems::init_system<conf_manager>(cfgRoot))
+    {
+      logger::error("Unable to init configuration system");
+    }
+
+    if (!systems::config().load_file("root", "root.cfg"))
+    {
+      logger::error("Unable to open root config file");
+    }
   }
 
   // Private members
 
   void core::run() noexcept
   {
+    if (!systems::init_system<draw_target, surface_type>())
+    {
+      logger::error("Unable to init the target graphics surface");
+      return;
+    }
+
+    NEK_TRACE("Starting main loop");
     loop();
   }
   void core::loop() noexcept
   {
+    while (true)
+    {
+      if (!systems::draw_target().update())
+      {
+        break;
+      }
+
+      m_game.update({});
+    }
   }
   void core::quit() noexcept
   {
+    logger::note("Shutting down");
+    systems::shutdown_system<draw_target>();
   }
 }

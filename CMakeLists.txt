@@ -72,7 +72,11 @@ set(OPT_TESTS OFF)
 set(OPT_APP OFF)
 add_subdirectory("${OPT_UTILS_DIR}/${THIRD_PARTY_DIR}/utils" ${TARGET_NAME})
 target_link_libraries(${LIBCORE_TARGET} ${TARGET_NAME})
-target_link_libraries(${APP_TARGET} ${TARGET_NAME})
+
+if(OPT_APP)
+  target_link_libraries(${APP_TARGET} ${TARGET_NAME})
+endif()
+
 set_target_properties(${TARGET_NAME} PROPERTIES FOLDER additional_deps/utils)
 
 if(BUILT_FROM_ROOT)

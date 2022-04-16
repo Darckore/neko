@@ -24,6 +24,7 @@ namespace neko
   public:
     static Derived& get() noexcept
     {
+      NEK_ASSERT(instance());
       return *instance();
     }
 
@@ -32,13 +33,13 @@ namespace neko
       instance().reset(nullptr);
     }
 
-    template <typename ...Args>
+    template <typename Sys, typename ...Args>
     static bool create(Args&& ...args) noexcept
     {
       auto&& inst = instance();
       if (!inst)
       {
-        inst.reset(new (std::nothrow) Derived{ std::forward<Args>(args)... });
+        inst.reset(new (std::nothrow) Sys{ std::forward<Args>(args)... });
       }
 
       return static_cast<bool>(inst);

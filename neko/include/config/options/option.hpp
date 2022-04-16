@@ -215,4 +215,36 @@ namespace neko::config
   private:
     value_type m_value;
   };
+
+  //
+  // An option whose only value is of the specified type
+  //
+  template <detail::val_type T>
+  class single_opt : public opt_wrapper<T>
+  {
+  public:
+    using base_type = opt_wrapper<T>;
+
+  public:
+    CLASS_SPECIALS_NODEFAULT(single_opt);
+
+    single_opt(const option& opt) noexcept :
+      base_type{ opt }
+    { }
+
+    const auto& value() const noexcept
+    {
+      NEK_ASSERT(*this);
+      return *base_type::template get<0>();
+    }
+    auto& value() noexcept
+    {
+      return utils::mutate(std::as_const(*this).value());
+    }
+  };
+
+  using int_opt    = single_opt<value::int_val>;
+  using float_opt  = single_opt<value::float_val>;
+  using bool_opt   = single_opt<value::bool_val>;
+  using string_opt = single_opt<value::str_val>;
 }
