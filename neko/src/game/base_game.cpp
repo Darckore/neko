@@ -1,7 +1,4 @@
 #include "game/base_game.hpp"
-#include "managers/sys_registry.hpp"
-#include "managers/logger.hpp"
-#include "managers/config.hpp"
 
 namespace neko
 {
@@ -23,6 +20,7 @@ namespace neko
     if (!core::create<core>(*this, "data"))
     {
       logger::error("Engine initialisation failed");
+      return;
     }
   #ifndef NDEBUG
     else
@@ -36,6 +34,12 @@ namespace neko
 
   bool base_game::init() noexcept
   {
+    if (!systems::good<conf_manager>())
+    {
+      NEK_TRACE("Configuration doesn't exist, shutting down");
+      return false;
+    }
+
     NEK_TRACE("Game init");
     if (!load())
     {

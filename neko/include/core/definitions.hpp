@@ -77,7 +77,7 @@ struct std::hash<neko::hashed_string>
 };
 
 #ifndef NDEBUG
-  #define NEK_TRACE(fmt, ...) logger::trace(fmt, __VA_ARGS__)
+  #define NEK_TRACE(fmt, ...) neko::logger::trace(fmt, __VA_ARGS__)
 #else
   #define NEK_TRACE(fmt, ...)
 #endif

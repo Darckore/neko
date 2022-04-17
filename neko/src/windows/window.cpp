@@ -129,14 +129,18 @@ namespace neko::platform
 
   void window::close() noexcept
   {
+    if (!m_handle)
+    {
+      return;
+    }
+
     NEK_TRACE("Closing window");
     using detail::wnd_helper;
 
-    auto hwnd = handle();
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, 0);
+    SetWindowLongPtr(m_handle, GWLP_USERDATA, 0);
 
     auto inst_handle = GetModuleHandle(0);
-    DestroyWindow(hwnd);
+    DestroyWindow(m_handle);
 
     m_handle = 0;
     UnregisterClass(wnd_helper::windowClass.data(), inst_handle);

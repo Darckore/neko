@@ -40,6 +40,7 @@ namespace neko
     if (!systems::init_system<conf_manager>(cfgRoot))
     {
       logger::error("Unable to init configuration system");
+      return;
     }
 
     if (!systems::config().load_file("root", "root.cfg"))
@@ -55,6 +56,12 @@ namespace neko
     if (!systems::init_system<draw_target, surface_type>())
     {
       logger::error("Unable to init the target graphics surface");
+      return;
+    }
+
+    if (!m_game.init())
+    {
+      logger::error("Game init failed, shutting down");
       return;
     }
 

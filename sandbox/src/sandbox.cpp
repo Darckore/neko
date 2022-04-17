@@ -8,6 +8,7 @@ namespace neko_game
 
   sandbox::sandbox() noexcept
   {
+    NEK_TRACE("Sandbox go");
     run();
   }
 
@@ -15,6 +16,7 @@ namespace neko_game
 
   bool sandbox::load() noexcept
   {
+    NEK_TRACE("Loading sandbox");
     return true;
   }
   void sandbox::on_update(time_type dt) noexcept

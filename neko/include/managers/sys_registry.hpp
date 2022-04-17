@@ -30,6 +30,12 @@ namespace neko
       return singleton<neko::conf_manager>::get();
     }
 
+    template <detail::engine_system Sys>
+    static bool good() noexcept
+    {
+      return singleton<Sys>::good();
+    }
+
   private:
     friend class core;
 
