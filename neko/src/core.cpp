@@ -84,5 +84,6 @@ namespace neko
   {
     logger::note("Shutting down");
     systems::shutdown_system<draw_target>();
+    systems::shutdown_system<conf_manager>();
   }
 }
