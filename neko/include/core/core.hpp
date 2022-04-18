@@ -3,6 +3,7 @@
 #include "managers/sys_registry.hpp"
 #include "managers/logger.hpp"
 #include "managers/config.hpp"
+#include "managers/event.hpp"
 
 namespace neko
 {
