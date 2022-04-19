@@ -2,32 +2,22 @@
 
 namespace neko
 {
+  extern void on_startup(base_game& game) noexcept;
+  extern void on_exit() noexcept;
+}
+
+namespace neko
+{
   // Special members
 
   base_game::~base_game() noexcept
   {
-    NEK_TRACE("Exiting the game");
-    core::shutdown();
-    logger::shutdown();
+    on_exit();
   }
 
   base_game::base_game() noexcept
   {
-    logger::init();
-    NEK_TRACE("Logger ready");
-
-    logger::note("Initialising the game");
-    if (!core::create<core>(*this, "data"))
-    {
-      logger::error("Engine initialisation failed");
-      return;
-    }
-  #ifndef NDEBUG
-    else
-    {
-      NEK_TRACE("Done core init");
-    }
-  #endif
+    on_startup(*this);
   }
 
   // Private members

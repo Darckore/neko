@@ -1,8 +1,20 @@
 #pragma once
-#include "managers/logger.hpp"
 
 namespace neko
 {
+  bool assertion(bool, std::string_view, std::source_location = std::source_location::current());
+}
+
+#ifndef NDEBUG
+  #define NEK_ASSERT(cond) BREAK_ON(!neko::assertion(static_cast<bool>(cond), #cond))
+#else
+  #define NEK_ASSERT(cond)
+#endif
+
+#include "managers/logger.hpp"
+
+namespace neko
+{  
   using time_type  = float;
   using coord_type = float;
 
@@ -87,7 +99,7 @@ namespace neko
 {
   inline bool assertion(bool condition,
                         std::string_view condStr,
-                        std::source_location loc = std::source_location::current())
+                        std::source_location loc)
   {
     if (condition)
       return true;
@@ -103,8 +115,7 @@ namespace neko
 }
 #endif
 
-#ifndef NDEBUG
-  #define NEK_ASSERT(cond) BREAK_ON(!neko::assertion(static_cast<bool>(cond), #cond))
-#else
-  #define NEK_ASSERT(cond)
-#endif
+namespace neko
+{
+  [[noreturn]] void on_terminate() noexcept;
+}

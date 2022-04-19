@@ -20,6 +20,7 @@ namespace neko_game
 
 int main()
 {
+  std::set_terminate(neko::on_terminate);
   auto game = neko_game::make_game();
   return 0;
 }

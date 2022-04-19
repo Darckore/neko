@@ -1,9 +1,7 @@
 #include "core/core.hpp"
-#include "managers/sys_registry.hpp"
+#include "managers/logger.hpp"
 #include "graphics/draw_target.hpp"
 #include "game/base_game.hpp"
-#include "managers/logger.hpp"
-#include "managers/config.hpp"
 
 #ifdef _WIN32
   #include "windows/window.hpp"
@@ -11,6 +9,71 @@
 #else
   static_assert(false, "Platform not supported");
 #endif
+
+namespace neko
+{
+  void on_startup(base_game& game) noexcept
+  {
+    logger::init();
+    NEK_TRACE("Logger ready");
+
+    const auto logLvl = logger::set_severity_level(logger::msg);
+    logger::note("Initialising the game");
+    logger::set_severity_level(logLvl);
+    if (!core::create<core>(game, "data"))
+    {
+      logger::error("Engine initialisation failed");
+      return;
+    }
+  #ifndef NDEBUG
+    else
+    {
+      NEK_TRACE("Done core init");
+    }
+  #endif
+  }
+
+  void on_exit() noexcept
+  {
+    NEK_TRACE("Exiting the game");
+    core::shutdown();
+    logger::shutdown();
+  }
+
+  void on_terminate() noexcept
+  {
+    bool outOfMemory = false;
+    if (auto ce = std::current_exception())
+    {
+      try
+      {
+        std::rethrow_exception(ce);
+      }
+      catch (std::bad_alloc& e)
+      {
+        outOfMemory = true;
+        logger::abnormal(e.what());
+      }
+      catch (std::exception& e)
+      {
+        logger::error("Uncaught exception. {}", e.what());
+      }
+      catch (...)
+      {
+        logger::error("Unknown exception");
+      }
+    }
+
+    if (!outOfMemory)
+    {
+      logger::error("Abnormal program termination");
+    }
+
+    on_exit();
+    std::_Exit(-1);
+  }
+}
+
 
 namespace neko
 {
@@ -23,7 +86,7 @@ namespace neko
       inst->run();
       return;
     }
-
+    
     logger::error("Engine startup failed");
   }
 
@@ -58,7 +121,7 @@ namespace neko
       logger::error("Unable to init the target graphics surface");
       return;
     }
-
+    
     if (!m_game.init())
     {
       logger::error("Game init failed, shutting down");
@@ -82,7 +145,10 @@ namespace neko
   }
   void core::quit() noexcept
   {
+    const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Shutting down");
+    logger::set_severity_level(logLvl);
+
     systems::shutdown_system<draw_target>();
     systems::shutdown_system<conf_manager>();
   }
