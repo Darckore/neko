@@ -11,15 +11,17 @@ namespace neko_game
 
     static void make() noexcept
     {
-      et::push(counter, counter + 1);
-      ++counter;
+      if (counter <= 10)
+      {
+        et::push(counter, counter + 1);
+        ++counter;
+      }
     }
 
     static void shoot() noexcept
     {
       if (counter > 10)
       {
-        counter = 0;
         et::dispatch();
       }
     }
@@ -29,8 +31,7 @@ namespace neko_game
 
   sandbox::~sandbox() noexcept = default;
 
-  sandbox::sandbox() noexcept :
-    m_sub{ this, [this](const auto& evt) noexcept { on_evt(evt); }}
+  sandbox::sandbox() noexcept
   {
     NEK_TRACE("Sandbox go");
     run();
@@ -42,6 +43,10 @@ namespace neko_game
   {
     NEK_TRACE("Loading sandbox");
     NEK_TRACE("Setting sandox handler");
+    m_sub = {
+      this,
+      [this](const auto& evt) noexcept { on_evt(evt); }
+    };
     return true;
   }
   void sandbox::on_update(time_type dt) noexcept
@@ -58,6 +63,7 @@ namespace neko_game
   void sandbox::on_evt(const dummy_evt& e) noexcept
   {
     utils::unused(e);
+    NEK_TRACE("Event thingy [{}, {}]", e.one, e.two);
   }
 
   game_ptr make_game()

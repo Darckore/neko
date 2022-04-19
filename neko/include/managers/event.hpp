@@ -153,11 +153,32 @@ namespace neko
     using consumer_ptr = handler_type::consumer_pointer;
 
   public:
-    CLASS_SPECIALS_NONE(event_subscriber);
+    event_subscriber() = default;
+
+    event_subscriber(const event_subscriber&) = delete;
+    event_subscriber& operator=(const event_subscriber&) = delete;
+
+    event_subscriber(event_subscriber&& other) noexcept : 
+      m_consumer{ other.m_consumer }
+    {
+      other.m_consumer = 0;
+    }
+    event_subscriber& operator=(event_subscriber&& other) noexcept
+    {
+      if (this != &other)
+      {
+        m_consumer = other.m_consumer;
+        other.m_consumer = 0;
+      }
+      return *this;
+    }
 
     ~event_subscriber() noexcept
     {
-      event_type::unsubscribe(m_consumer);
+      if (m_consumer)
+      {
+        event_type::unsubscribe(m_consumer);
+      }
     }
 
     event_subscriber(consumer_ptr c, handler_raw handler) noexcept :
