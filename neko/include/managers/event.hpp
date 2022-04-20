@@ -72,7 +72,7 @@ namespace neko
   public:
     CLASS_SPECIALS_ALL_CUSTOM(event);
 
-  protected:
+  private:
     event() noexcept = default;
 
   public:
@@ -113,7 +113,10 @@ namespace neko
     template <typename ...Args>
     static void push(Args&& ...args) noexcept
     {
-      m_queue.emplace(std::forward<Args>(args)...);
+      if (!m_subs.empty())
+      {
+        m_queue.emplace(std::forward<Args>(args)...);
+      }
     }
 
     static void dispatch() noexcept
@@ -122,6 +125,16 @@ namespace neko
       {
         dispatch_one();
       }
+    }
+
+    static auto sub_count() noexcept
+    {
+      return m_subs.size();
+    }
+
+    static auto pending_count() noexcept
+    {
+      return m_queue.size();
     }
 
   private:

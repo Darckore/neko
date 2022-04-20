@@ -4,7 +4,7 @@
 using namespace neko::config;
 using token = lex::token;
 
-namespace engine_tests
+namespace neko_tests
 {
   namespace detail
   {
