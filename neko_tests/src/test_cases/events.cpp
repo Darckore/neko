@@ -110,8 +110,8 @@ namespace neko_tests
 
     struct ev23_consumer
     {
-      using e1 = detail::ev2;
-      using e2 = detail::ev3;
+      using e1 = ev2;
+      using e2 = ev3;
       ev23_consumer()
       {
         es1 = { this, [this](const auto& e){ on_e1(e); }};
@@ -156,5 +156,68 @@ namespace neko_tests
     ASSERT_EQ(e2::pending_count(), maxEvents);
 
     src.dispatch();
+  }
+
+  namespace detail
+  {
+    struct ev4
+    {
+      neko::hashed_string s{ "neko" };
+    };
+
+    struct ev4_src
+    {
+      using ev = event<ev4>;
+      ev4_src() = default;
+
+      void produce() noexcept
+      {
+        ev::push();
+      }
+      void dispatch() noexcept
+      {
+        ev::dispatch();
+      }
+    };
+
+    struct ev4_consumer
+    {
+      inline static auto cnt = 0;
+      static constexpr neko::hashed_string str{ "neko" };
+      using ev = ev4;
+      ev4_consumer() noexcept :
+        sub{ this, [this](const auto& e){ on_ev(e); }}
+      { }
+
+      event_subscriber<ev> sub;
+
+      void on_ev(const ev& e) noexcept
+      {
+        EXPECT_EQ(e.s, str);
+        ++cnt;
+      }
+    };
+  }
+
+  TEST(evt, t_one_many)
+  {
+    using ev = event<detail::ev4>;
+    detail::ev4_src src;
+
+    using cons = detail::ev4_consumer;
+    {
+      std::array<cons, 10> consumers{};
+
+      ASSERT_EQ(ev::sub_count(), consumers.size());
+      ASSERT_EQ(ev::pending_count(), 0u);
+
+      src.produce();
+      ASSERT_EQ(ev::pending_count(), consumers.size());
+
+      src.dispatch();
+      ASSERT_EQ(cons::cnt, consumers.size());
+    }
+
+    ASSERT_EQ(ev::sub_count(), 0u);
   }
 }

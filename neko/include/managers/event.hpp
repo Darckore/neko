@@ -29,6 +29,11 @@ namespace neko
       event_handler(to_handle(cptr), std::move(handler))
     {}
 
+    explicit operator bool() const noexcept
+    {
+      return static_cast<bool>(m_consumer);
+    }
+
     bool operator==(const event_handler& other) const noexcept
     {
       return m_consumer == other.m_consumer;
@@ -78,6 +83,11 @@ namespace neko
   public:
     static bool subscribe(handler_type handler) noexcept
     {
+      if (!handler)
+      {
+        return false;
+      }
+
       if (auto it = std::find(m_subs.begin(), m_subs.end(), handler); it != m_subs.end())
       {
         NEK_TRACE("An event consumer tried to subscribe more than once");
@@ -96,6 +106,11 @@ namespace neko
 
     static void unsubscribe(consumer_ptr c) noexcept
     {
+      if (!c)
+      {
+        return;
+      }
+
       auto it = std::remove_if(m_subs.begin(), m_subs.end(),
                 [c](const auto& handler)
                 {
@@ -134,7 +149,7 @@ namespace neko
 
     static auto pending_count() noexcept
     {
-      return m_queue.size();
+      return m_queue.size() * m_subs.size();
     }
 
   private:
@@ -198,6 +213,16 @@ namespace neko
       m_consumer{ c }
     {
       event_type::subscribe(c, std::move(handler));
+    }
+
+    explicit operator bool() const noexcept
+    {
+      return static_cast<bool>(m_consumer);
+    }
+
+    void reset() noexcept
+    {
+      m_consumer = consumer_ptr{};
     }
 
   private:
