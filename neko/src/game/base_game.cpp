@@ -1,7 +1,10 @@
 #include "game/base_game.hpp"
-#include "managers/sys_registry.hpp"
-#include "managers/logger.hpp"
-#include "managers/config.hpp"
+
+namespace neko
+{
+  extern void on_startup(base_game& game) noexcept;
+  extern void on_exit() noexcept;
+}
 
 namespace neko
 {
@@ -9,33 +12,24 @@ namespace neko
 
   base_game::~base_game() noexcept
   {
-    NEK_TRACE("Exiting the game");
-    core::shutdown();
-    logger::shutdown();
+    on_exit();
   }
 
   base_game::base_game() noexcept
   {
-    logger::init();
-    NEK_TRACE("Logger ready");
-
-    logger::note("Initialising the game");
-    if (!core::create<core>(*this, "data"))
-    {
-      logger::error("Engine initialisation failed");
-    }
-  #ifndef NDEBUG
-    else
-    {
-      NEK_TRACE("Done core init");
-    }
-  #endif
+    on_startup(*this);
   }
 
   // Private members
 
   bool base_game::init() noexcept
   {
+    if (!systems::good<conf_manager>())
+    {
+      NEK_TRACE("Configuration doesn't exist, shutting down");
+      return false;
+    }
+
     NEK_TRACE("Game init");
     if (!load())
     {

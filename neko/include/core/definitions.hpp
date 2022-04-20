@@ -1,8 +1,20 @@
 #pragma once
-#include "managers/logger.hpp"
 
 namespace neko
 {
+  bool assertion(bool, std::string_view, std::source_location = std::source_location::current());
+}
+
+#ifndef NDEBUG
+  #define NEK_ASSERT(cond) BREAK_ON(!neko::assertion(static_cast<bool>(cond), #cond))
+#else
+  #define NEK_ASSERT(cond)
+#endif
+
+#include "managers/logger.hpp"
+
+namespace neko
+{  
   using time_type  = float;
   using coord_type = float;
 
@@ -22,7 +34,9 @@ namespace neko
     using hash_type = utils::detail::max_int_t;
 
   public:
-    CLASS_SPECIALS_NODEFAULT(hashed_string);
+    CLASS_SPECIALS_ALL_CUSTOM(hashed_string);
+
+    constexpr hashed_string() noexcept = default;
 
     constexpr hashed_string(std::string_view str) noexcept :
       m_hash{ utils::hash(str) }
@@ -77,7 +91,7 @@ struct std::hash<neko::hashed_string>
 };
 
 #ifndef NDEBUG
-  #define NEK_TRACE(fmt, ...) logger::trace(fmt, __VA_ARGS__)
+  #define NEK_TRACE(fmt, ...) neko::logger::trace(fmt, __VA_ARGS__)
 #else
   #define NEK_TRACE(fmt, ...)
 #endif
@@ -87,7 +101,7 @@ namespace neko
 {
   inline bool assertion(bool condition,
                         std::string_view condStr,
-                        std::source_location loc = std::source_location::current())
+                        std::source_location loc)
   {
     if (condition)
       return true;
@@ -103,8 +117,7 @@ namespace neko
 }
 #endif
 
-#ifndef NDEBUG
-  #define NEK_ASSERT(cond) BREAK_ON(!neko::assertion(static_cast<bool>(cond), #cond))
-#else
-  #define NEK_ASSERT(cond)
-#endif
+namespace neko
+{
+  [[noreturn]] void on_terminate() noexcept;
+}

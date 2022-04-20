@@ -18,6 +18,8 @@
 #include <unordered_map>
 #include <set>
 #include <unordered_set>
+#include <stack>
+#include <queue>
 
 #include <optional>
 #include <variant>
@@ -27,6 +29,8 @@
 #include <new>
 
 #include <format>
+
+#include <exception>
 
 // just because it is often needed everywhere
 using namespace std::literals;

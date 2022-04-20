@@ -4,7 +4,7 @@
 using namespace neko::config;
 using token = lex::token;
 
-namespace engine_tests
+namespace neko_tests
 {
   namespace detail
   {
@@ -212,6 +212,46 @@ namespace engine_tests
     EXPECT_DOUBLE_EQ((wrap.f()), 2.0f);
     EXPECT_EQ((wrap.b()), false);
     EXPECT_EQ((wrap.s()), "hi there"sv);
+  }
+
+  TEST(conf, t_single)
+  {
+    section s{ "empty"sv };
+
+    option optI{ "optI"sv, s };
+    optI.add_value(42);
+    option optF{ "optF"sv, s };
+    optF.add_value(69.0f);
+    option optB{ "optB"sv, s };
+    optB.add_value(true);
+    option optS{ "optS"sv, s };
+    optS.add_value("dummy"sv);
+
+    int_opt io{ optI };
+    ASSERT_TRUE(io);
+    EXPECT_EQ(io.value(), 42);
+
+    float_opt fo{ optF };
+    ASSERT_TRUE(fo);
+    EXPECT_FLOAT_EQ(fo.value(), 69.0f);
+
+    bool_opt bo{ optB };
+    ASSERT_TRUE(bo);
+    EXPECT_TRUE(bo.value());
+
+    string_opt so{ optS };
+    ASSERT_TRUE(so);
+    EXPECT_EQ(so.value(), "dummy"sv);
+
+    option optFail1{ "fail1"sv, s };
+    int_opt fi1{ optFail1 };
+    ASSERT_FALSE(fi1);
+
+    option optFail2{ "fail2"sv, s };
+    optFail2.add_value(42);
+    optFail2.add_value(69);
+    int_opt fi2{ optFail2 };
+    ASSERT_FALSE(fi2);
   }
 
   TEST(conf_file, t_bad)

@@ -22,6 +22,11 @@ namespace neko
     }
 
   public:
+    static bool good() noexcept
+    {
+      return static_cast<bool>(instance());
+    }
+
     static Derived& get() noexcept
     {
       NEK_ASSERT(instance());

@@ -1,5 +1,9 @@
 #pragma once
 #include "core/singleton_base.hpp"
+#include "managers/sys_registry.hpp"
+#include "managers/logger.hpp"
+#include "managers/config.hpp"
+#include "managers/event.hpp"
 
 namespace neko
 {

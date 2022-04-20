@@ -24,13 +24,13 @@ namespace neko
     CLASS_SPECIALS_NONE(logger);
 
   private:
-    static void prologue(level lvl) noexcept
+    static void prologue(level lvl)
     {
       constexpr std::array severities {
-        "[error]  "sv,
-        "[warning]"sv,
-        "[note]   "sv,
-        "[trace]  "sv
+        "[error]"sv,
+        "[warn] "sv,
+        "[note] "sv,
+        "[trace]"sv
       };
 
       constexpr auto fmt = "=={1:%F, %H:%M:%OS}== {0:}: "sv;
@@ -53,9 +53,28 @@ namespace neko
         return;
       }
 
-      prologue(lvl);
+      try
+      {
+        prologue(lvl);
+        std::format_to(std::back_inserter(m_buf), fmt, std::forward<Args>(args)...);
+      }
+      catch (std::format_error& e)
+      {
+        m_buf.clear();
+        std::format_to(std::back_inserter(m_buf), "Bad format string: {}", e.what());
+      }
+      catch (std::runtime_error& e)
+      {
+        m_buf.clear();
+        std::format_to(std::back_inserter(m_buf), "Runtime error: {}", e.what());
+      }
+      catch (std::bad_alloc& e)
+      {
+        m_buf.clear();
+        abnormal(e.what());
+        return;
+      }
       
-      std::format_to(std::back_inserter(m_buf), fmt, std::forward<Args>(args)...);
       m_stream  << m_buf << '\n';
       std::cout << m_buf << '\n';
 
@@ -63,38 +82,45 @@ namespace neko
     }
 
   public:
-    static void init()
+    static bool good() noexcept
+    {
+      return static_cast<bool>(m_file);
+    }
+
+    static void init() noexcept
     {
       constexpr auto initialSize = 256ull;
       m_buf.reserve(initialSize);
 
       m_file.open(m_fname.c_str());
+      NEK_ASSERT(good());
     }
 
-    static void dump()
+    static void dump() noexcept
     {
-      if (!m_file)
-      {
-        return;
-      }
-
+      NEK_ASSERT(static_cast<bool>(m_file));
       m_file << m_stream.rdbuf();
+      m_stream = {};
     }
 
-    static void shutdown()
+    static void shutdown() noexcept
     {
       dump();
       m_file.close();
     }
 
-    static void set_severity_level(level lvl) noexcept
+    static level set_severity_level(level lvl) noexcept
     {
+      const auto prev = m_lvl;
       m_lvl = lvl;
+      return prev;
     }
 
-    static void assign_file(file_name fname)
+    static void assign_file(file_name fname) noexcept
     {
       m_fname = std::move(fname);
+      m_file.open(m_fname);
+      NEK_ASSERT(good());
     }
 
   #ifndef NDEBUG
@@ -121,6 +147,13 @@ namespace neko
     static void error(fmt_type fmt, Args&& ...args) noexcept
     {
       message(err, fmt, std::forward<Args>(args)...);
+    }
+
+    static void abnormal(std::string_view msg) noexcept
+    {
+      NEK_ASSERT(good());
+      dump();
+      m_file << "Abnormal termination. " << msg << '\n';
     }
 
   private:
