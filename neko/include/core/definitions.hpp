@@ -34,7 +34,9 @@ namespace neko
     using hash_type = utils::detail::max_int_t;
 
   public:
-    CLASS_SPECIALS_NODEFAULT(hashed_string);
+    CLASS_SPECIALS_ALL_CUSTOM(hashed_string);
+
+    constexpr hashed_string() noexcept = default;
 
     constexpr hashed_string(std::string_view str) noexcept :
       m_hash{ utils::hash(str) }
