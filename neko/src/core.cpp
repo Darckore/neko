@@ -1,9 +1,9 @@
 #include "core/core.hpp"
 #include "managers/logger.hpp"
-#include "graphics/draw_target.hpp"
+#include "graphics/app_host.hpp"
 #include "game/base_game.hpp"
 
-#ifdef _WIN32
+#if NEK_WINDOWS
   #include "windows/window.hpp"
   using surface_type = neko::platform::window;
 #else
@@ -116,7 +116,7 @@ namespace neko
 
   void core::run() noexcept
   {
-    if (!systems::init_system<draw_target, surface_type>())
+    if (!systems::init_system<app_host, surface_type>())
     {
       logger::error("Unable to init the target graphics surface");
       return;
@@ -135,7 +135,7 @@ namespace neko
   {
     while (true)
     {
-      if (!systems::draw_target().update())
+      if (!systems::app_host().update())
       {
         break;
       }
@@ -149,7 +149,7 @@ namespace neko
     logger::note("Shutting down");
     logger::set_severity_level(logLvl);
 
-    systems::shutdown_system<draw_target>();
+    systems::shutdown_system<app_host>();
     systems::shutdown_system<conf_manager>();
   }
 }

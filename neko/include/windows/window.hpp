@@ -1,6 +1,9 @@
 #pragma once
+
+#if NEK_WINDOWS
+
 #include "platform/support/windows/win_includes.hpp"
-#include "graphics/draw_target.hpp"
+#include "graphics/app_host.hpp"
 
 namespace neko::platform
 {
@@ -10,7 +13,7 @@ namespace neko::platform
     struct wnd_helper;
   }
 
-  class window final : public draw_target
+  class window final : public app_host
   {
   public:
     using proc_result   = std::intptr_t;
@@ -19,7 +22,7 @@ namespace neko::platform
   private:
     using msg_wrapper = detail::msg_wrapper;
     friend struct detail::wnd_helper;
-    friend class singleton<draw_target>;
+    friend class singleton<app_host>;
 
   public:
     CLASS_SPECIALS_NONE_CUSTOM(window);
@@ -50,3 +53,5 @@ namespace neko::platform
     dimensions  m_size{};
   };
 }
+
+#endif

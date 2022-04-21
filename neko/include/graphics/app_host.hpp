@@ -3,7 +3,7 @@
 
 namespace neko
 {
-  class draw_target : private singleton<draw_target>
+  class app_host : private singleton<app_host>
   {
   public:
     using size_type = std::int32_t;
@@ -17,11 +17,11 @@ namespace neko
     };
 
   public:
-    CLASS_SPECIALS_NONE_CUSTOM(draw_target);
+    CLASS_SPECIALS_NONE_CUSTOM(app_host);
 
-    virtual ~draw_target() noexcept = default;
+    virtual ~app_host() noexcept = default;
 
-    draw_target() noexcept = default;
+    app_host() noexcept = default;
 
   public:
     virtual bool update() noexcept = 0;

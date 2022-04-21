@@ -1,5 +1,10 @@
 #pragma once
 
+#if _WIN64
+  #define NEK_WINDOWS 1
+#else
+#endif
+
 namespace neko
 {
   bool assertion(bool, std::string_view, std::source_location = std::source_location::current());

@@ -1,6 +1,6 @@
 #pragma once
 #include "core/singleton_base.hpp"
-#include "graphics/draw_target.hpp"
+#include "graphics/app_host.hpp"
 #include "managers/config.hpp"
 
 namespace neko
@@ -11,7 +11,7 @@ namespace neko
     concept engine_system = std::is_base_of_v<singleton<System>, System>;
   }
 
-  class draw_target;
+  class app_host;
   class conf_manager;
 
   class systems
@@ -20,9 +20,9 @@ namespace neko
     CLASS_SPECIALS_NONE(systems);
 
   public:
-    static decltype(auto) draw_target() noexcept
+    static decltype(auto) app_host() noexcept
     {
-      return singleton<neko::draw_target>::get();
+      return singleton<neko::app_host>::get();
     }
 
     static decltype(auto) config() noexcept

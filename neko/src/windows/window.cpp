@@ -1,4 +1,7 @@
 #include "windows/window.hpp"
+
+#if NEK_WINDOWS
+
 #include "managers/sys_registry.hpp"
 #include "managers/logger.hpp"
 
@@ -224,3 +227,5 @@ namespace neko::platform
     NEK_TRACE("Done init window");
   }
 }
+
+#endif
