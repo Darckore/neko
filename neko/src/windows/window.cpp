@@ -102,6 +102,10 @@ namespace neko::platform
       return 0;
 
     case WM_KEYDOWN:
+      if (!(lp & 0x40000000)) // No autorepeat
+      {
+        //
+      }
       return 0;
 
     case WM_KEYUP:
