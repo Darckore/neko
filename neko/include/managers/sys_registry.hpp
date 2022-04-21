@@ -1,6 +1,6 @@
 #pragma once
 #include "core/singleton_base.hpp"
-#include "graphics/app_host.hpp"
+#include "managers/app_host.hpp"
 #include "managers/config.hpp"
 
 namespace neko

@@ -1,6 +1,6 @@
 #include "core/core.hpp"
 #include "managers/logger.hpp"
-#include "graphics/app_host.hpp"
+#include "managers/app_host.hpp"
 #include "game/base_game.hpp"
 
 #if NEK_WINDOWS
