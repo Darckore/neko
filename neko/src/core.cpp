@@ -25,12 +25,8 @@ namespace neko
       logger::error("Engine initialisation failed");
       return;
     }
-  #ifndef NDEBUG
-    else
-    {
-      NEK_TRACE("Done core init");
-    }
-  #endif
+
+    NEK_TRACE("Done core init");
   }
 
   void on_exit() noexcept
