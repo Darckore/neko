@@ -11,7 +11,9 @@ function(collect_sources SOURCE_FILES HEADERS ADDITIONAL_FILES)
   file( GLOB_RECURSE SRC
         LIST_DIRECTORIES false      
         "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h*"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/*/*.h*" )
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*.inl"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*/*.h*"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*/*.inl")
   
   set(HEADERS "${SRC}" PARENT_SCOPE)
   set(SRC)
