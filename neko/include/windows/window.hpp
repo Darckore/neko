@@ -4,6 +4,8 @@
 
 #include "platform/support/windows/win_includes.hpp"
 #include "managers/app_host.hpp"
+#include "managers/event.hpp"
+#include "events/raw_input.hpp"
 
 namespace neko::platform
 {
