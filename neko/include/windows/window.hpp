@@ -26,6 +26,10 @@ namespace neko::platform
     friend struct detail::wnd_helper;
     friend class singleton<app_host>;
 
+    using kb_evt = evt::kb;
+    using kc = kb_evt::key_code;
+    using kb = event<kb_evt>;
+
   public:
     CLASS_SPECIALS_NONE_CUSTOM(window);
 
@@ -49,6 +53,9 @@ namespace neko::platform
 
   private:
     void init() noexcept;
+
+    kc key_code(WPARAM code) const noexcept;
+    void on_key(msg_wrapper msg) noexcept;
 
   private:
     handle_type m_handle{};

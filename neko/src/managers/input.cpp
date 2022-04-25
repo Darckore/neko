@@ -17,6 +17,7 @@ namespace neko
   void input::on_kb(const kb_event& e) noexcept
   {
     utils::unused(e);
+    NEK_TRACE("'{}' key {}", e.code, (e.is_up() ? "released"sv : "pressed"sv));
   }
 
   void input::on_mouse(const mouse_event& e) noexcept
