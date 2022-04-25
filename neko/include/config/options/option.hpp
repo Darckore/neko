@@ -5,7 +5,7 @@ namespace neko::config
 {
   class section;
 
-  class option
+  class option final
   {
   public:
     using value_type = value;

@@ -3,7 +3,7 @@
 
 namespace neko::config
 {
-  class section
+  class section final
   {
   public:
     using name_type  = option::name_type;

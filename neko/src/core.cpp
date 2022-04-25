@@ -1,6 +1,6 @@
 #include "core/core.hpp"
-#include "managers/logger.hpp"
 #include "managers/app_host.hpp"
+#include "managers/input.hpp"
 #include "game/base_game.hpp"
 
 #if NEK_WINDOWS
@@ -117,6 +117,12 @@ namespace neko
       logger::error("Unable to init the target graphics surface");
       return;
     }
+
+    if (!systems::init_system<input>())
+    {
+      logger::error("Unable to init the input system");
+      return;
+    }
     
     if (!m_game.init())
     {
@@ -145,6 +151,7 @@ namespace neko
     logger::note("Shutting down");
     logger::set_severity_level(logLvl);
 
+    systems::shutdown_system<input>();
     systems::shutdown_system<app_host>();
     systems::shutdown_system<conf_manager>();
   }

@@ -4,7 +4,7 @@
 
 namespace neko::config
 {
-  class cfg
+  class cfg final
   {
   public:
     using file_type  = cfg_file;

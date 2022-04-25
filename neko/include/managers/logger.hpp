@@ -2,7 +2,7 @@
 
 namespace neko
 {
-  class logger
+  class logger final
   {
   public:
     enum class level : std::uint8_t

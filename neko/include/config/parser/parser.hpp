@@ -4,7 +4,7 @@
 
 namespace neko::config
 {
-  class parser
+  class parser final
   {
   public:
     static constexpr auto root_name = "~"sv;

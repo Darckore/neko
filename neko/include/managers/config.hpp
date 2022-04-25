@@ -8,7 +8,7 @@ namespace neko
     class cfg;
   }
 
-  class conf_manager : private singleton<conf_manager>
+  class conf_manager final : private singleton<conf_manager>
   {
   private:
     friend class singleton<conf_manager>;

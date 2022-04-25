@@ -2,7 +2,7 @@
 
 namespace neko::config
 {
-  class cfg_file
+  class cfg_file final
   {
   public:
     using name_type   = fsys::path;

@@ -11,7 +11,7 @@ namespace neko::config
         std::is_same_v<T, std::string_view>);
   }
 
-  class value
+  class value final
   {
   public:
     using bool_val   = bool;

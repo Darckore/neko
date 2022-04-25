@@ -3,7 +3,7 @@
 
 namespace neko::config
 {
-  class lex
+  class lex final
   {
   public:
     using tok_value = cfg_file::line_type;

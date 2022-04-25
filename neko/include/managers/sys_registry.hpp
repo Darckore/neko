@@ -14,7 +14,7 @@ namespace neko
   class app_host;
   class conf_manager;
 
-  class systems
+  class systems final
   {
   public:
     CLASS_SPECIALS_NONE(systems);
