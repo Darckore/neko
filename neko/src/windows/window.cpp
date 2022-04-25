@@ -170,7 +170,7 @@ namespace neko::platform
       DispatchMessage(&msg);
     }
 
-    kb::dispatch();
+    button::dispatch();
     return msg.message != WM_QUIT;
   }
 
@@ -234,9 +234,9 @@ namespace neko::platform
     NEK_TRACE("Done init window");
   }
 
-  window::kc window::key_code(WPARAM code) const noexcept
+  window::btn_code window::key_code(WPARAM code) const noexcept
   {
-    const auto inputKey = static_cast<kc>(code);
+    const auto inputKey = static_cast<btn_code>(code);
     return inputKey;
   }
 
@@ -251,9 +251,9 @@ namespace neko::platform
       return;
     }
 
-    const auto kind = keyUp ? kb_evt::up : kb_evt::down;
+    const auto kind = keyUp ? btn_evt::up : btn_evt::down;
     const auto code = key_code(msg.wp);
-    kb::push(kind, code);
+    button::push(kind, code);
   }
 }
 

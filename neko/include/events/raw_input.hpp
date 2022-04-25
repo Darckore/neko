@@ -2,7 +2,7 @@
 
 namespace neko::evt
 {
-  struct kb
+  struct button
   {
     enum class kind : std::uint8_t
     {
@@ -26,7 +26,7 @@ namespace neko::evt
     key_code code{};
   };
 
-  struct mouse
+  struct axis
   {
   };
 }
