@@ -57,7 +57,6 @@ namespace neko::platform
   private:
     void init() noexcept;
 
-    btn_code key_code(WPARAM code) const noexcept;
     void on_key(msg_wrapper msg) noexcept;
 
   private:

@@ -5,7 +5,7 @@ namespace neko::evt
   class input_map final
   {
   public:
-    using raw_code = std::uint16_t;
+    using raw_code = std::uintptr_t;
 
     enum class key_codes : std::uint8_t
     {
@@ -159,6 +159,6 @@ namespace neko::evt
     CLASS_SPECIALS_NONE(input_map);
 
   public:
-    key_codes convert(raw_code code) noexcept;
+    static key_codes convert(raw_code code) noexcept;
   };
 }

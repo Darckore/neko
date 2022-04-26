@@ -24,6 +24,75 @@ namespace neko::platform
         using ct = std::common_type_t<decltype(msg_code), Args...>;
         return utils::eq_any(static_cast<ct>(msg_code), static_cast<ct>(args)...);
       }
+
+    private:
+      msg_wrapper& norm_mouse() noexcept
+      {
+        switch (msg_code)
+        {
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+          wp = VK_LBUTTON;
+          break;
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+          wp = VK_RBUTTON;
+          break;
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+          wp = VK_MBUTTON;
+          break;
+
+        default:
+          break;
+        }
+
+        return *this;
+      }
+      msg_wrapper& norm_up_down() noexcept
+      {
+        if (is(WM_SYSKEYDOWN, WM_LBUTTONDOWN, WM_RBUTTONDOWN, WM_MBUTTONDOWN))
+        {
+          msg_code = WM_KEYDOWN;
+        }
+        else if (is(WM_SYSKEYUP, WM_LBUTTONUP, WM_RBUTTONUP, WM_MBUTTONUP))
+        {
+          msg_code = WM_KEYUP;
+        }
+
+        return *this;
+      }
+      msg_wrapper& norm_modifiers() noexcept
+      {
+        const auto scancode = static_cast<UINT>((lp & 0x00ff0000) >> 16);
+        const auto extended = (lp & 0x01000000) != 0;
+
+        switch (wp)
+        {
+        case VK_SHIFT:
+          wp = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
+          break;
+        case VK_CONTROL:
+          wp = extended ? VK_RCONTROL : VK_LCONTROL;
+          break;
+        case VK_MENU:
+          wp = extended ? VK_RMENU : VK_LMENU;
+          break;
+
+        default:
+          break;
+        }
+
+        return *this;
+      }
+
+    public:
+      msg_wrapper& normalise() noexcept
+      {
+        return norm_mouse()
+              .norm_modifiers()
+              .norm_up_down();
+      }
     };
 
     struct wnd_helper
@@ -108,9 +177,20 @@ namespace neko::platform
       close();
       return 0;
 
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+      on_key(msg.normalise());
+      return DefWindowProc(handle, msg_code, wp, lp);
+
     case WM_KEYDOWN:
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    case WM_MBUTTONDOWN:
     case WM_KEYUP:
-      on_key(msg);
+    case WM_LBUTTONUP:
+    case WM_RBUTTONUP:
+    case WM_MBUTTONUP:
+      on_key(msg.normalise());
       return 0;
     }
 
@@ -234,16 +314,10 @@ namespace neko::platform
     NEK_TRACE("Done init window");
   }
 
-  window::btn_code window::key_code(WPARAM code) const noexcept
-  {
-    const auto inputKey = static_cast<btn_code>(code);
-    return inputKey;
-  }
-
   void window::on_key(msg_wrapper msg) noexcept
   {
-    const bool keyUp   = msg.is(WM_KEYUP, WM_SYSKEYUP);
-    const bool keyDown = !keyUp && msg.is(WM_KEYDOWN, WM_SYSKEYDOWN)
+    const bool keyUp   = msg.is(WM_KEYUP);
+    const bool keyDown = !keyUp && msg.is(WM_KEYDOWN)
                                 && !(msg.lp & 0x40000000); // no autorepeat
 
     if (!(keyUp || keyDown))
@@ -251,8 +325,9 @@ namespace neko::platform
       return;
     }
 
+    using im = neko::evt::input_map;
     const auto kind = keyUp ? btn_evt::up : btn_evt::down;
-    const auto code = key_code(msg.wp);
+    const auto code = im::convert(msg.wp);
     button::push(kind, code);
   }
 }
