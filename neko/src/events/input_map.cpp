@@ -6,7 +6,7 @@ namespace neko::evt
 
   input_map::key_codes input_map::convert(raw_code code) noexcept
   {
-    static constexpr std::array<key_codes, 256u> codes{
+    static constexpr std::array codes{
       DEAD,
     #if NEK_WINDOWS
       #include "windows/windows_keycodes.inl"

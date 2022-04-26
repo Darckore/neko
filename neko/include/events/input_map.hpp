@@ -68,6 +68,17 @@ namespace neko::evt
       KB_Y,
       KB_Z,
 
+      // Modifiers
+      KB_SHIFT,
+      KB_CTRL,
+      KB_ALT,
+      KB_LSHIFT,
+      KB_RSHIFT,
+      KB_LCTRL,
+      KB_RCTRL,
+      KB_LALT,
+      KB_RALT,
+
       // Functional keys
       KB_F1,
       KB_F2,
@@ -118,6 +129,28 @@ namespace neko::evt
       KB_DIV,
       KB_SEP,
       KB_NUM_COMMA,
+
+      // Punctuation
+      KB_SEMICOLON,
+      KB_PLUS,
+      KB_MINUS,
+      KB_COMMA,
+      KB_DOT,
+      KB_SLASH,
+      KB_GRAVE,
+      KB_OPEN_SQ,
+      KB_CLOSE_SQ,
+      KB_BACKSLASH,
+      KB_QUOTE,
+
+      // Caps, Num, Scroll lock
+      KB_CAPS,
+      KB_NUM,
+      KB_SCROLL,
+
+      // Misc
+      KB_PAUSE,
+      KB_PRINT_SCREEN
     };
 
     using enum key_codes;
