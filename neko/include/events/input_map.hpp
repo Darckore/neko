@@ -5,7 +5,7 @@ namespace neko::evt
   class input_map final
   {
   public:
-    using raw_code    = std::uint16_t;
+    using raw_code = std::uint16_t;
 
     enum class key_codes : std::uint8_t
     {
@@ -94,7 +94,7 @@ namespace neko::evt
       KB_F23,
       KB_F24,
 
-      // Special keys
+      // Navigation keys
       KB_ENTER,
       KB_ESC,
       KB_SPACE,
@@ -103,7 +103,21 @@ namespace neko::evt
       KB_LEFT,
       KB_RIGHT,
       KB_UP,
-      KB_DOWN
+      KB_DOWN,
+      KB_PGUP,
+      KB_PGDOWN,
+      KB_END,
+      KB_HOME,
+      KB_INS,
+      KB_DEL,
+
+      // Numpad operators
+      KB_MUL,
+      KB_ADD,
+      KB_SUB,
+      KB_DIV,
+      KB_SEP,
+      KB_NUM_COMMA,
     };
 
     using enum key_codes;
