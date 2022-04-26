@@ -6,6 +6,7 @@ namespace neko::evt
   {
   public:
     using raw_code = std::uintptr_t;
+    using key_name = std::string_view;
 
     enum class key_codes : std::uint8_t
     {
@@ -142,6 +143,7 @@ namespace neko::evt
       KB_CLOSE_SQ,
       KB_BACKSLASH,
       KB_QUOTE,
+      KB_CLEAR,
 
       // Caps, Num, Scroll lock
       KB_CAPS,
@@ -150,7 +152,10 @@ namespace neko::evt
 
       // Misc
       KB_PAUSE,
-      KB_PRINT_SCREEN
+      KB_PRINT_SCREEN,
+
+      // Max
+      CODE_LAST
     };
 
     using enum key_codes;
@@ -160,5 +165,6 @@ namespace neko::evt
 
   public:
     static key_codes convert(raw_code code) noexcept;
+    static key_name to_string(key_codes code) noexcept;
   };
 }

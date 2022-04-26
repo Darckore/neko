@@ -17,7 +17,8 @@ namespace neko
   void input::on_button(const btn_event& e) noexcept
   {
     utils::unused(e);
-    NEK_TRACE("'0x{:02X}' key {}", e.to_char(), (e.is_up() ? "released"sv : "pressed"sv));
+    NEK_TRACE("'0x{:02X}' ({}) key {}", e.to_char(),
+                e.to_string(), (e.is_up() ? "released"sv : "pressed"sv));
   }
 
   void input::on_axis(const axis_event& e) noexcept

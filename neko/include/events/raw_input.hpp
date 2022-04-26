@@ -29,6 +29,10 @@ namespace neko::evt
     {
       return static_cast<std::uint8_t>(code);
     }
+    auto to_string() const noexcept
+    {
+      return input_map::to_string(code);
+    }
 
     kind what{};
     key_code code{};
