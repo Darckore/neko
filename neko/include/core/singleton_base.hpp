@@ -1,7 +1,15 @@
+//
+// Base of all systems
+//
+
 #pragma once
 
 namespace neko
 {
+  //
+  // The base class for all systems in the engine
+  // Ensures a single instance, manages own lifetime
+  //
   template <typename Derived>
   class singleton
   {
@@ -15,39 +23,51 @@ namespace neko
     singleton() = default;
 
   protected:
-    static pointer& instance() noexcept
-    {
-      static pointer ptr;
-      return ptr;
-    }
+    //
+    // The instance pointer
+    //
+    inline static pointer instance;
 
   public:
+    //
+    // Checks whether the instance exists
+    //
     static bool good() noexcept
     {
-      return static_cast<bool>(instance());
+      return static_cast<bool>(instance);
     }
 
+    //
+    // Returns an instance reference
+    //
     static Derived& get() noexcept
     {
-      NEK_ASSERT(instance());
-      return *instance();
+      NEK_ASSERT(good());
+      return *instance;
     }
 
+    //
+    // Destroys the instance
+    //
     static void shutdown() noexcept
     {
-      instance().reset(nullptr);
+      instance.reset(nullptr);
     }
 
+    //
+    // Creates an instance
+    // Parameters passed to this function must match the actual class's
+    // constructor signature
+    //
     template <typename Sys, typename ...Args>
     static bool create(Args&& ...args) noexcept
     {
-      auto&& inst = instance();
-      if (!inst)
+      if (!instance)
       {
-        inst.reset(new (std::nothrow) Sys{ std::forward<Args>(args)... });
+        instance.reset(new (std::nothrow) Sys{ std::forward<Args>(args)... });
       }
 
-      return static_cast<bool>(inst);
+      return good();
     }
   };
 

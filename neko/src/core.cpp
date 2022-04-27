@@ -12,6 +12,9 @@
 
 namespace neko
 {
+  //
+  // Performs initial setup before the core can be initialised
+  //
   void on_startup(base_game& game) noexcept
   {
     logger::init();
@@ -29,6 +32,9 @@ namespace neko
     NEK_TRACE("Done core init");
   }
 
+  //
+  // Performs final shutdown after the core has been stopped
+  //
   void on_exit() noexcept
   {
     NEK_TRACE("Exiting the game");
@@ -36,6 +42,9 @@ namespace neko
     logger::shutdown();
   }
 
+  //
+  // Terminate handler
+  //
   void on_terminate() noexcept
   {
     bool outOfMemory = false;
@@ -77,9 +86,9 @@ namespace neko
 
   void core::startup() noexcept
   {
-    if (auto&& inst = instance())
+    if (instance)
     {
-      inst->run();
+      instance->run();
       return;
     }
     
