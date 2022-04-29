@@ -58,8 +58,8 @@ namespace neko::platform
     //
     // Mouse move event
     //
-    using axis_evt = evt::axis;
-    using axis     = event<axis_evt>;
+    using pos_evt  = evt::position;
+    using position = event<pos_evt>;
 
   public:
     CLASS_SPECIALS_NONE_CUSTOM(window);

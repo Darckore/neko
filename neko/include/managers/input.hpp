@@ -11,7 +11,7 @@ namespace neko
     friend class singleton<input>;
 
     using btn_event  = evt::button;
-    using axis_event = evt::axis;
+    using position_event = evt::position;
 
   public:
     CLASS_SPECIALS_NONE_CUSTOM(input);
@@ -23,10 +23,10 @@ namespace neko
 
   private:
     void on_button(const btn_event& e) noexcept;
-    void on_axis(const axis_event& e) noexcept;
+    void on_position(const position_event& e) noexcept;
 
   private:
-    event_subscriber<btn_event>    m_kb;
-    event_subscriber<axis_event> m_mouse;
+    event_subscriber<btn_event>      m_kb;
+    event_subscriber<position_event> m_mouse;
   };
 }

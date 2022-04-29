@@ -75,7 +75,7 @@ namespace neko::evt
   //
   //
   //
-  struct axis
+  struct position
   {
   };
 }

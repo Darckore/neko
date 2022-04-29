@@ -8,7 +8,7 @@ namespace neko
 
   input::input() noexcept :
     NEK_EVTSUB(m_kb, on_button),
-    NEK_EVTSUB(m_mouse, on_axis)
+    NEK_EVTSUB(m_mouse, on_position)
   {
   }
 
@@ -21,7 +21,7 @@ namespace neko
                 e.to_string(), (e.is_up() ? "released"sv : "pressed"sv));
   }
 
-  void input::on_axis(const axis_event& e) noexcept
+  void input::on_position(const position_event& e) noexcept
   {
     utils::unused(e);
   }
