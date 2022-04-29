@@ -11,6 +11,9 @@ namespace neko::platform
 
   namespace detail
   {
+    //
+    // Message wrapper
+    //
     struct msg_wrapper
     {
       HWND handle;
@@ -18,6 +21,9 @@ namespace neko::platform
       WPARAM wp;
       LPARAM lp;
 
+      //
+      // Checks if the message is one of the given kinds
+      //
       template <utils::detail::integer ...Args>
       constexpr bool is(Args ...args) const noexcept
       {
@@ -26,6 +32,9 @@ namespace neko::platform
       }
 
     private:
+      //
+      // Makes mouse button codes consistent
+      //
       msg_wrapper& norm_mouse() noexcept
       {
         switch (msg_code)
@@ -49,6 +58,11 @@ namespace neko::platform
 
         return *this;
       }
+      
+      //
+      // Converts specific up/down events to the generic
+      // WM_KEYUP/WM_KEYDOWN
+      //
       msg_wrapper& norm_up_down() noexcept
       {
         if (is(WM_SYSKEYDOWN, WM_LBUTTONDOWN, WM_RBUTTONDOWN, WM_MBUTTONDOWN))
@@ -62,6 +76,11 @@ namespace neko::platform
 
         return *this;
       }
+      
+      //
+      // Produces distinction between left and right
+      // shift/ctrl/alt
+      //
       msg_wrapper& norm_modifiers() noexcept
       {
         const auto scancode = static_cast<UINT>((lp & 0x00ff0000) >> 16);
@@ -87,6 +106,9 @@ namespace neko::platform
       }
 
     public:
+      //
+      // Prepares message data for further processing
+      //
       msg_wrapper& normalise() noexcept
       {
         return norm_mouse()
@@ -95,10 +117,21 @@ namespace neko::platform
       }
     };
 
+
+    //
+    // Low-level init helper
+    //
     struct wnd_helper
     {
-      static constexpr auto windowClass = "MAINWND"sv;
+      //
+      // We always use the same window class because we'll have a single window
+      //
+      static constexpr auto windowClass = "NEKO_MAINWND"sv;
 
+      //
+      // Generic window procedure
+      // Delegates calls to the specific window's proc
+      //
       static LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       {
         window* wndPtr = nullptr;
@@ -120,6 +153,10 @@ namespace neko::platform
 
         return DefWindowProc(hwnd, msg, wParam, lParam);
       }
+      
+      //
+      // Registers the window class with the OS
+      //
       static auto make_wnd_class(std::string_view className) noexcept
       {
         auto inst_handle = GetModuleHandle(0);
@@ -146,6 +183,10 @@ namespace neko::platform
 
         return inst_handle;
       }
+      
+      //
+      // Calculates window client rectangle
+      //
       static auto calc_size() noexcept
       {
         MONITORINFO monitorInfo{ sizeof(monitorInfo) };
