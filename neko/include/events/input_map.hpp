@@ -1,13 +1,32 @@
+//
+// Input map
+//
+
 #pragma once
 
 namespace neko::evt
 {
+  //
+  // Input map
+  // Converts platform-specific input scan codes to
+  // platform-independent ones used throughout the engine
+  //
   class input_map final
   {
   public:
+    //
+    // Platform scan code
+    //
     using raw_code = std::uintptr_t;
+
+    //
+    // Key code as string
+    //
     using key_name = std::string_view;
 
+    //
+    // Codes for buttons from different types of controllers
+    //
     enum class key_codes : std::uint8_t
     {
       DEAD,
@@ -164,7 +183,14 @@ namespace neko::evt
     CLASS_SPECIALS_NONE(input_map);
 
   public:
+    //
+    // Converts platform scan codes to neko key codes
+    //
     static key_codes convert(raw_code code) noexcept;
+
+    //
+    // Returns a string by key code
+    //
     static key_name to_string(key_codes code) noexcept;
   };
 }

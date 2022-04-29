@@ -326,9 +326,9 @@ namespace neko::platform
     }
 
     using im = neko::evt::input_map;
-    const auto kind = keyUp ? btn_evt::up : btn_evt::down;
+    const auto state = keyUp ? btn_evt::up : btn_evt::down;
     const auto code = im::convert(msg.wp);
-    button::push(kind, code);
+    button::push(state, code);
   }
 }
 
