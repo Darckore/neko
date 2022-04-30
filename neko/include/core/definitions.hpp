@@ -1,7 +1,19 @@
+//
+// Common definitions used throughout the codebase
+//
+
 #pragma once
+
+#if _WIN64
+  #define NEK_WINDOWS 1
+#else
+#endif
 
 namespace neko
 {
+  //
+  // Assertion helper
+  //
   bool assertion(bool, std::string_view, std::source_location = std::source_location::current());
 }
 
@@ -28,6 +40,10 @@ namespace neko
   template <typename T>
   using pointer = std::unique_ptr<T>;
 
+  //
+  // A hashed string representation. Contains a string's hash code,
+  // can be used as an 'id' of sorts
+  //
   class hashed_string
   {
   public:
@@ -72,6 +88,9 @@ namespace neko
 
   using path_type = fsys::path;
 
+  //
+  // Hasher for std::filesystem::path
+  //
   struct path_hasher
   {
     auto operator()(const path_type& p) const noexcept
@@ -90,7 +109,18 @@ struct std::hash<neko::hashed_string>
   }
 };
 
+//
+// Initialisation thing for lambdas calling class members.
+// Use it when subscribing to events to avoid such tedious things:
+// evt_sub{ this, [this](const auto& e) { on_event(e); } }
+//
+#define NEK_EVTSUB(sub_name, handler) sub_name{ this, [this](const auto& e) { handler(e); } }
+
 #ifndef NDEBUG
+  //
+  // Posts a low-priority message to the log.
+  // Can be used liberally to trace debug messages
+  //
   #define NEK_TRACE(fmt, ...) neko::logger::trace(fmt, __VA_ARGS__)
 #else
   #define NEK_TRACE(fmt, ...)
@@ -119,5 +149,11 @@ namespace neko
 
 namespace neko
 {
+  //
+  // std::terminate handler
+  // Since neko hates exceptions (most everything is noexcept),
+  // we might run into hard crashes if something goes terribly wrong
+  // This one will ensure we shut down gracefully
+  //
   [[noreturn]] void on_terminate() noexcept;
 }

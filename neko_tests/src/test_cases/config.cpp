@@ -189,19 +189,19 @@ namespace neko_tests
 
       auto& i() const noexcept
       {
-        return *get<0>();
+        return get<0>();
       }
       auto& f() const noexcept
       {
-        return *get<1>();
+        return get<1>();
       }
       auto& b() const noexcept
       {
-        return *get<2>();
+        return get<2>();
       }
       auto& s() const noexcept
       {
-        return *get<3>();
+        return get<3>();
       }
     };
 

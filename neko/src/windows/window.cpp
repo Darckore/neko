@@ -1,4 +1,7 @@
 #include "windows/window.hpp"
+
+#if NEK_WINDOWS
+
 #include "managers/sys_registry.hpp"
 #include "managers/logger.hpp"
 
@@ -8,18 +11,127 @@ namespace neko::platform
 
   namespace detail
   {
+    //
+    // Message wrapper
+    //
     struct msg_wrapper
     {
       HWND handle;
       UINT msg_code;
       WPARAM wp;
       LPARAM lp;
+
+      //
+      // Checks if the message is one of the given kinds
+      //
+      template <utils::detail::integer ...Args>
+      constexpr bool is(Args ...args) const noexcept
+      {
+        using ct = std::common_type_t<decltype(msg_code), Args...>;
+        return utils::eq_any(static_cast<ct>(msg_code), static_cast<ct>(args)...);
+      }
+
+    private:
+      //
+      // Makes mouse button codes consistent
+      //
+      msg_wrapper& norm_mouse() noexcept
+      {
+        switch (msg_code)
+        {
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+          wp = VK_LBUTTON;
+          break;
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+          wp = VK_RBUTTON;
+          break;
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+          wp = VK_MBUTTON;
+          break;
+
+        default:
+          break;
+        }
+
+        return *this;
+      }
+      
+      //
+      // Converts specific up/down events to the generic
+      // WM_KEYUP/WM_KEYDOWN
+      //
+      msg_wrapper& norm_up_down() noexcept
+      {
+        if (is(WM_SYSKEYDOWN, WM_LBUTTONDOWN, WM_RBUTTONDOWN, WM_MBUTTONDOWN))
+        {
+          msg_code = WM_KEYDOWN;
+        }
+        else if (is(WM_SYSKEYUP, WM_LBUTTONUP, WM_RBUTTONUP, WM_MBUTTONUP))
+        {
+          msg_code = WM_KEYUP;
+        }
+
+        return *this;
+      }
+      
+      //
+      // Produces distinction between left and right
+      // shift/ctrl/alt
+      //
+      msg_wrapper& norm_modifiers() noexcept
+      {
+        const auto scancode = static_cast<UINT>((lp & 0x00ff0000) >> 16);
+        const auto extended = (lp & 0x01000000) != 0;
+
+        switch (wp)
+        {
+        case VK_SHIFT:
+          wp = MapVirtualKey(scancode, MAPVK_VSC_TO_VK_EX);
+          break;
+        case VK_CONTROL:
+          wp = extended ? VK_RCONTROL : VK_LCONTROL;
+          break;
+        case VK_MENU:
+          wp = extended ? VK_RMENU : VK_LMENU;
+          break;
+
+        default:
+          break;
+        }
+
+        return *this;
+      }
+
+    public:
+      //
+      // Prepares message data for further processing
+      //
+      msg_wrapper& normalise() noexcept
+      {
+        return norm_mouse()
+              .norm_modifiers()
+              .norm_up_down();
+      }
     };
 
+
+    //
+    // Low-level init helper
+    //
     struct wnd_helper
     {
-      static constexpr auto windowClass = "MAINWND"sv;
+      //
+      // We always use the same window class because we'll have a single window
+      //
+      static constexpr auto windowClass = "NEKO_MAINWND"sv;
 
+      //
+      // Generic window procedure
+      // Delegates calls to the specific window's proc
+      //
       static LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       {
         window* wndPtr = nullptr;
@@ -41,6 +153,10 @@ namespace neko::platform
 
         return DefWindowProc(hwnd, msg, wParam, lParam);
       }
+      
+      //
+      // Registers the window class with the OS
+      //
       static auto make_wnd_class(std::string_view className) noexcept
       {
         auto inst_handle = GetModuleHandle(0);
@@ -67,6 +183,10 @@ namespace neko::platform
 
         return inst_handle;
       }
+      
+      //
+      // Calculates window client rectangle
+      //
       static auto calc_size() noexcept
       {
         MONITORINFO monitorInfo{ sizeof(monitorInfo) };
@@ -98,10 +218,24 @@ namespace neko::platform
       close();
       return 0;
 
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+      on_key(msg);
+      return DefWindowProc(handle, msg_code, wp, lp);
+
     case WM_KEYDOWN:
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    case WM_MBUTTONDOWN:
+    case WM_KEYUP:
+    case WM_LBUTTONUP:
+    case WM_RBUTTONUP:
+    case WM_MBUTTONUP:
+      on_key(msg);
       return 0;
 
-    case WM_KEYUP:
+    case WM_MOUSEMOVE:
+      on_mouse(msg);
       return 0;
     }
 
@@ -161,6 +295,7 @@ namespace neko::platform
       DispatchMessage(&msg);
     }
 
+    dispatch_events();
     return msg.message != WM_QUIT;
   }
 
@@ -223,4 +358,39 @@ namespace neko::platform
     m_handle = reinterpret_cast<handle_type>(handle);
     NEK_TRACE("Done init window");
   }
+
+  void window::dispatch_events() noexcept
+  {
+    button::dispatch();
+    position::dispatch();
+  }
+  void window::on_key(msg_wrapper msg) noexcept
+  {
+    msg.normalise();
+    const bool keyUp   = msg.is(WM_KEYUP);
+    const bool keyDown = !keyUp && msg.is(WM_KEYDOWN)
+                                && !(msg.lp & 0x40000000); // no autorepeat
+
+    if (!(keyUp || keyDown))
+    {
+      return;
+    }
+
+    using im = neko::evt::input_map;
+    const auto state = keyUp ? btn_evt::up : btn_evt::down;
+    const auto code = im::convert(msg.wp);
+    button::push(state, code);
+  }
+  void window::on_mouse(msg_wrapper msg) noexcept
+  {
+    const auto halfScreenX = m_size.width / 2;
+    const auto halfScreenY = m_size.height / 2;
+    const auto mouseX = GET_X_LPARAM(msg.lp) - halfScreenX;
+    const auto mouseY = halfScreenY - GET_Y_LPARAM(msg.lp);
+    const auto normX = static_cast<coord_type>(mouseX) / halfScreenX;
+    const auto normY = static_cast<coord_type>(mouseY) / halfScreenY;
+    position::push(0u, normX, normY, pos_evt::MOUSE_PTR);
+  }
 }
+
+#endif

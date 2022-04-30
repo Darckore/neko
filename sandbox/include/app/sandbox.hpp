@@ -3,12 +3,6 @@
 
 namespace neko_game
 {
-  struct dummy_evt
-  {
-    int one{};
-    int two{};
-  };
-
   class sandbox : public neko::base_game
   {
   public:
@@ -22,11 +16,6 @@ namespace neko_game
     virtual bool load() noexcept override;
     virtual void on_update(time_type dt) noexcept override;
     virtual void on_render() noexcept override;
-
-  // Just fooling around
-  private:
-    void on_evt(const dummy_evt& e) noexcept;
-    neko::event_subscriber<dummy_evt> m_sub;
   };
 
   game_ptr make_game();

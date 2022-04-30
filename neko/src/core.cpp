@@ -1,9 +1,9 @@
 #include "core/core.hpp"
-#include "managers/logger.hpp"
-#include "graphics/draw_target.hpp"
+#include "managers/app_host.hpp"
+#include "managers/input.hpp"
 #include "game/base_game.hpp"
 
-#ifdef _WIN32
+#if NEK_WINDOWS
   #include "windows/window.hpp"
   using surface_type = neko::platform::window;
 #else
@@ -12,6 +12,9 @@
 
 namespace neko
 {
+  //
+  // Performs initial setup before the core can be initialised
+  //
   void on_startup(base_game& game) noexcept
   {
     logger::init();
@@ -20,19 +23,18 @@ namespace neko
     const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Initialising the game");
     logger::set_severity_level(logLvl);
-    if (!core::create<core>(game, "data"))
+    if (!core::create<core>(game, "data/root.cfg"))
     {
       logger::error("Engine initialisation failed");
       return;
     }
-  #ifndef NDEBUG
-    else
-    {
-      NEK_TRACE("Done core init");
-    }
-  #endif
+
+    NEK_TRACE("Done core init");
   }
 
+  //
+  // Performs final shutdown after the core has been stopped
+  //
   void on_exit() noexcept
   {
     NEK_TRACE("Exiting the game");
@@ -40,6 +42,9 @@ namespace neko
     logger::shutdown();
   }
 
+  //
+  // Terminate handler
+  //
   void on_terminate() noexcept
   {
     bool outOfMemory = false;
@@ -81,9 +86,9 @@ namespace neko
 
   void core::startup() noexcept
   {
-    if (auto&& inst = instance())
+    if (instance)
     {
-      inst->run();
+      instance->run();
       return;
     }
     
@@ -100,13 +105,13 @@ namespace neko
   core::core(game_type& game, const path_type& cfgRoot) noexcept :
     m_game{ game }
   {
-    if (!systems::init_system<conf_manager>(cfgRoot))
+    if (!systems::init_system<conf_manager>(cfgRoot.parent_path()))
     {
       logger::error("Unable to init configuration system");
       return;
     }
 
-    if (!systems::config().load_file("root", "root.cfg"))
+    if (!systems::config().load_file("root", cfgRoot.filename()))
     {
       logger::error("Unable to open root config file");
     }
@@ -116,9 +121,15 @@ namespace neko
 
   void core::run() noexcept
   {
-    if (!systems::init_system<draw_target, surface_type>())
+    if (!systems::init_system<app_host, surface_type>())
     {
       logger::error("Unable to init the target graphics surface");
+      return;
+    }
+
+    if (!systems::init_system<input>())
+    {
+      logger::error("Unable to init the input system");
       return;
     }
     
@@ -135,7 +146,7 @@ namespace neko
   {
     while (true)
     {
-      if (!systems::draw_target().update())
+      if (!systems::app_host().update())
       {
         break;
       }
@@ -149,7 +160,8 @@ namespace neko
     logger::note("Shutting down");
     logger::set_severity_level(logLvl);
 
-    systems::shutdown_system<draw_target>();
+    systems::shutdown_system<input>();
+    systems::shutdown_system<app_host>();
     systems::shutdown_system<conf_manager>();
   }
 }
