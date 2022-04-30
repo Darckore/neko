@@ -24,5 +24,6 @@ namespace neko
   void input::on_position(const position_event& e) noexcept
   {
     utils::unused(e);
+    NEK_TRACE("{} {} at [{:3.2f}: {:3.2f}]", e.to_string(), e.device, e.horizontal, e.vertical);
   }
 }

@@ -25,6 +25,11 @@ namespace neko::evt
     using key_name = std::string_view;
 
     //
+    // Position source as string
+    //
+    using pos_name = std::string_view;
+
+    //
     // Codes for buttons from different types of controllers
     //
     enum class key_codes : std::uint8_t
@@ -179,6 +184,25 @@ namespace neko::evt
 
     using enum key_codes;
 
+    //
+    // Source of position events (mouse, sticks, etc.)
+    //
+    enum class position_src : std::uint8_t
+    {
+      // Mouse pointer
+      MOUSE_PTR,
+
+      // Gamepad sticks
+      PAD_LEFT,
+      PAD_RIGHT,
+
+      // Joystick
+      JOYSTICK,
+
+      // Max
+      CODE_LAST
+    };
+
   public:
     CLASS_SPECIALS_NONE(input_map);
 
@@ -192,5 +216,10 @@ namespace neko::evt
     // Returns a string by key code
     //
     static key_name to_string(key_codes code) noexcept;
+
+    //
+    // Returns a string by position source
+    //
+    static pos_name to_string(position_src src) noexcept;
   };
 }

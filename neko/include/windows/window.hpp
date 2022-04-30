@@ -109,9 +109,19 @@ namespace neko::platform
     void init() noexcept;
 
     //
+    // Dispatches events this frame
+    //
+    void dispatch_events() noexcept;
+
+    //
     // Processes keyboard input and generates an event
     //
     void on_key(msg_wrapper msg) noexcept;
+
+    //
+    // Processes and normalises mouse cursor movement
+    //
+    void on_mouse(msg_wrapper msg) noexcept;
 
   private:
     //

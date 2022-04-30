@@ -174,4 +174,26 @@ namespace neko::evt
     NEK_ASSERT(idx < names.size());
     return names[idx];
   }
+
+  input_map::pos_name input_map::to_string(position_src src) noexcept
+  {
+    static constexpr std::array names{
+      // Mouse pointer
+      "Mouse"sv,
+
+      // Gamepad sticks
+      "Left stick"sv,
+      "Right stick"sv,
+
+      // Joystick
+      "Joystick"sv
+    };
+
+    static_assert(names.size() == static_cast<std::size_t>(position_src::CODE_LAST),
+                  "There should be as many names as there are position sources");
+
+    const auto idx = static_cast<std::size_t>(src);
+    NEK_ASSERT(idx < names.size());
+    return names[idx];
+  }
 }

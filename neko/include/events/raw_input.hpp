@@ -73,9 +73,47 @@ namespace neko::evt
 
 
   //
-  //
+  // Represents a 2D position of things like the mouse cursor,
+  // gamepad sticks, or josticks
+  // The values must be normalised in range [-1.0, 1.0]
   //
   struct position
   {
+    //
+    // Event source type
+    //
+    using input_src = input_map::position_src;
+    using enum input_src;
+
+    using idx_type = std::uint32_t;
+
+    //
+    // Returns position source as string
+    //
+    auto to_string() const noexcept
+    {
+      return input_map::to_string(source);
+    }
+
+    //
+    // Source device index
+    // Allows figuring out which of same-type devices produce the input
+    //
+    idx_type device{};
+
+    //
+    // Horizontal position component
+    //
+    coord_type horizontal{};
+
+    //
+    // Vertical position component
+    //
+    coord_type vertical{};
+
+    //
+    // Input source
+    //
+    input_src source{};
   };
 }

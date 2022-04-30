@@ -220,7 +220,7 @@ namespace neko::platform
 
     case WM_SYSKEYDOWN:
     case WM_SYSKEYUP:
-      on_key(msg.normalise());
+      on_key(msg);
       return DefWindowProc(handle, msg_code, wp, lp);
 
     case WM_KEYDOWN:
@@ -231,7 +231,11 @@ namespace neko::platform
     case WM_LBUTTONUP:
     case WM_RBUTTONUP:
     case WM_MBUTTONUP:
-      on_key(msg.normalise());
+      on_key(msg);
+      return 0;
+
+    case WM_MOUSEMOVE:
+      on_mouse(msg);
       return 0;
     }
 
@@ -291,7 +295,7 @@ namespace neko::platform
       DispatchMessage(&msg);
     }
 
-    button::dispatch();
+    dispatch_events();
     return msg.message != WM_QUIT;
   }
 
@@ -355,8 +359,14 @@ namespace neko::platform
     NEK_TRACE("Done init window");
   }
 
+  void window::dispatch_events() noexcept
+  {
+    button::dispatch();
+    position::dispatch();
+  }
   void window::on_key(msg_wrapper msg) noexcept
   {
+    msg.normalise();
     const bool keyUp   = msg.is(WM_KEYUP);
     const bool keyDown = !keyUp && msg.is(WM_KEYDOWN)
                                 && !(msg.lp & 0x40000000); // no autorepeat
@@ -370,6 +380,16 @@ namespace neko::platform
     const auto state = keyUp ? btn_evt::up : btn_evt::down;
     const auto code = im::convert(msg.wp);
     button::push(state, code);
+  }
+  void window::on_mouse(msg_wrapper msg) noexcept
+  {
+    const auto halfScreenX = m_size.width / 2;
+    const auto halfScreenY = m_size.height / 2;
+    const auto mouseX = GET_X_LPARAM(msg.lp) - halfScreenX;
+    const auto mouseY = halfScreenY - GET_Y_LPARAM(msg.lp);
+    const auto normX = static_cast<coord_type>(mouseX) / halfScreenX;
+    const auto normY = static_cast<coord_type>(mouseY) / halfScreenY;
+    position::push(0u, normX, normY, pos_evt::MOUSE_PTR);
   }
 }
 
