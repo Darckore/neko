@@ -35,6 +35,7 @@ namespace neko
       return false;
     }
 
+    NEK_TRACE("Opening config file {}", fname.string());
     auto foundKey = lookup_index(fname);
     if (foundKey)
     {

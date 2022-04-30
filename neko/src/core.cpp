@@ -23,7 +23,7 @@ namespace neko
     const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Initialising the game");
     logger::set_severity_level(logLvl);
-    if (!core::create<core>(game, "data"))
+    if (!core::create<core>(game, "data/root.cfg"))
     {
       logger::error("Engine initialisation failed");
       return;
@@ -105,13 +105,13 @@ namespace neko
   core::core(game_type& game, const path_type& cfgRoot) noexcept :
     m_game{ game }
   {
-    if (!systems::init_system<conf_manager>(cfgRoot))
+    if (!systems::init_system<conf_manager>(cfgRoot.parent_path()))
     {
       logger::error("Unable to init configuration system");
       return;
     }
 
-    if (!systems::config().load_file("root", "root.cfg"))
+    if (!systems::config().load_file("root", cfgRoot.filename()))
     {
       logger::error("Unable to open root config file");
     }

@@ -39,8 +39,8 @@ namespace neko
   private:
     //
     // Accepts a reference to the game being run
-    // The cfgRoot parameter is a path (without file name) to where
-    // the root configuration file (root.cfg) is stored
+    // The cfgRoot parameter is a path (relative to the working dir, or absolute)
+    // to the root configuration file
     //
     core(game_type& game, const path_type& cfgRoot) noexcept;
 
