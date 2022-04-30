@@ -25,9 +25,9 @@ namespace neko::evt
     using key_name = std::string_view;
 
     //
-    // Position source as string
+    // Position or axis source as string
     //
-    using pos_name = std::string_view;
+    using src_name = std::string_view;
 
     //
     // Codes for buttons from different types of controllers
@@ -181,8 +181,16 @@ namespace neko::evt
       // Max
       CODE_LAST
     };
-
     using enum key_codes;
+
+    //
+    // Button state
+    //
+    enum class key_state : std::uint8_t
+    {
+      RELEASED,
+      ENGAGED
+    };
 
     //
     // Source of position events (mouse, sticks, etc.)
@@ -200,8 +208,25 @@ namespace neko::evt
       JOYSTICK,
 
       // Max
-      CODE_LAST
+      POS_SRC_LAST
     };
+    using enum position_src;
+
+    //
+    // Source of axis events (mouse, triggers, etc.)
+    //
+    enum class axis_src : std::uint8_t
+    {
+      // Mouse wheel
+      MOUSE_WHEEL,
+
+      // Gamepad triggers
+      PAD_LRT,
+
+      // Max
+      AXIS_SRC_LAST
+    };
+    using enum axis_src;
 
   public:
     CLASS_SPECIALS_NONE(input_map);
@@ -220,6 +245,11 @@ namespace neko::evt
     //
     // Returns a string by position source
     //
-    static pos_name to_string(position_src src) noexcept;
+    static src_name to_string(position_src src) noexcept;
+
+    //
+    // Returns a string by axis source
+    //
+    static src_name to_string(axis_src src) noexcept;
   };
 }

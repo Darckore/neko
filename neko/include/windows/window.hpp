@@ -61,6 +61,12 @@ namespace neko::platform
     using pos_evt  = evt::position;
     using position = event<pos_evt>;
 
+    //
+    // Mouse wheel event
+    //
+    using wheel_evt = evt::axis;
+    using wheel     = event<wheel_evt>;
+
   public:
     CLASS_SPECIALS_NONE_CUSTOM(window);
 
@@ -122,6 +128,11 @@ namespace neko::platform
     // Processes and normalises mouse cursor movement
     //
     void on_mouse(msg_wrapper msg) noexcept;
+
+    //
+    // Processes and normalises mouse wheel
+    //
+    void on_wheel(msg_wrapper msg) noexcept;
 
   private:
     //
