@@ -51,7 +51,7 @@ namespace neko::platform
     //
     // Flags indicating connected ports
     //
-    using ports_info = std::bitset<maxConnections>;
+    using port_states = std::bitset<maxConnections>;
 
   public:
     CLASS_SPECIALS_NONE_CUSTOM(xinput);
@@ -92,7 +92,7 @@ namespace neko::platform
     //
     // Port states
     //
-    ports_info m_ports{};
+    port_states m_ports{};
   };
 }
 
