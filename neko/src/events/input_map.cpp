@@ -164,7 +164,27 @@ namespace neko::evt
 
       // Misc
       "KB_PAUSE"sv,
-      "KB_PRINT_SCREEN"sv
+      "KB_PRINT_SCREEN"sv,
+
+      // Gamepads and joysticks
+
+      // XBOX buttons
+      "PAD_A"sv,
+      "PAD_B"sv,
+      "PAD_X"sv,
+      "PAD_Y"sv,
+      "PAD_LS"sv,
+      "PAD_RS"sv,
+      "PAD_LB"sv,
+      "PAD_RB"sv,
+      "PAD_START"sv,
+      "PAD_BACK"sv,
+
+      // D-pad
+      "PAD_UP"sv,
+      "PAD_DOWN"sv,
+      "PAD_LEFT"sv,
+      "PAD_RIGHT"sv,
     };
 
     static_assert(names.size() == static_cast<std::size_t>(CODE_LAST),

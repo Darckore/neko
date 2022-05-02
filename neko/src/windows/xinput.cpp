@@ -26,12 +26,19 @@ namespace neko::platform
     }
 
     refresh_all();
+
+    if (!m_ports.count())
+    {
+      return;
+    }
   }
 
   // Private members
 
   void xinput::detect_devices() noexcept
   {
+    NEK_TRACE("Detecting connected input devices");
+
     for (device_idx idx = 0; idx < maxConnections; ++idx)
     {
       XINPUT_STATE devState{};
@@ -39,15 +46,19 @@ namespace neko::platform
       m_ports[idx] = portState == ERROR_SUCCESS;
     }
 
+    NEK_TRACE("Number of conneted input controllers: {}", m_ports.count());
     m_detectClk();
   }
   
   void xinput::refresh_one(device_idx idx) noexcept
   {
+    NEK_TRACE("Refreshing controller {}", idx);
+
     XINPUT_STATE devState{};
     const auto portState = XInputGetState(idx, &devState);
     if (portState != ERROR_SUCCESS)
     {
+      NEK_TRACE("Controller {} was disconnected", idx);
       m_ports[idx] = false;
       return;
     }

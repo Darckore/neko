@@ -183,6 +183,26 @@ namespace neko::evt
       KB_PAUSE,
       KB_PRINT_SCREEN,
 
+      // Gamepads and joysticks
+
+      // XBOX buttons
+      PAD_A,
+      PAD_B,
+      PAD_X,
+      PAD_Y,
+      PAD_LS,
+      PAD_RS,
+      PAD_LB,
+      PAD_RB,
+      PAD_START,
+      PAD_BACK,
+
+      // D-pad
+      PAD_UP,
+      PAD_DOWN,
+      PAD_LEFT,
+      PAD_RIGHT,
+
       // Max
       CODE_LAST
     };
@@ -206,8 +226,8 @@ namespace neko::evt
       MOUSE_PTR,
 
       // Gamepad sticks
-      PAD_LEFT,
-      PAD_RIGHT,
+      PAD_LSTICK,
+      PAD_RSTICK,
 
       // Joystick
       JOYSTICK,
