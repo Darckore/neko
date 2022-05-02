@@ -64,6 +64,12 @@ namespace neko
     //
     void quit() noexcept;
 
+    //
+    // Polls and dispatches raw input events
+    // Returns false if input resulted in a 'quit' signal
+    //
+    bool poll_input() noexcept;
+
   private:
     //
     // User-defined game object

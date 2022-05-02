@@ -15,7 +15,7 @@ namespace neko::evt
     //
     struct device_idx
     {
-      using idx_type = std::uint32_t;
+      using idx_type = input_map::device_idx;
 
       //
       // Source device index

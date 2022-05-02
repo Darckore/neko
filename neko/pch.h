@@ -20,6 +20,7 @@
 #include <unordered_set>
 #include <stack>
 #include <queue>
+#include <bitset>
 
 #include <optional>
 #include <variant>

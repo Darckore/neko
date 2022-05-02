@@ -161,13 +161,8 @@ namespace neko
   }
   void core::loop() noexcept
   {
-    while (true)
+    while (poll_input())
     {
-      if (!systems::app_host().update())
-      {
-        break;
-      }
-
       m_game.update({});
     }
   }
@@ -181,5 +176,16 @@ namespace neko
     systems::shutdown_system<platform_input>();
     systems::shutdown_system<app_host>();
     systems::shutdown_system<conf_manager>();
+  }
+
+  bool core::poll_input() noexcept
+  {
+    if (systems::app_host().update())
+    {
+      systems::platform_input().update();
+      return true;
+    }
+
+    return false;
   }
 }

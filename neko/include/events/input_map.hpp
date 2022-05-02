@@ -15,6 +15,11 @@ namespace neko::evt
   {
   public:
     //
+    // Device index
+    //
+    using device_idx = std::uint32_t;
+
+    //
     // Platform scan code
     //
     using raw_code = std::uintptr_t;
