@@ -4,6 +4,8 @@
 
 #pragma once
 
+#define NEK_BAD_PLATFORM static_assert(false, "Platform not supported");
+
 #if _WIN64
   #define NEK_WINDOWS 1
 #else

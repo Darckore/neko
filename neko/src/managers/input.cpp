@@ -1,4 +1,5 @@
 #include "managers/input.hpp"
+#include "core/managers.hpp"
 
 namespace neko
 {

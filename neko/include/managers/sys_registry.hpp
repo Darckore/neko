@@ -4,8 +4,6 @@
 
 #pragma once
 #include "core/singleton_base.hpp"
-#include "managers/app_host.hpp"
-#include "managers/config.hpp"
 
 namespace neko
 {
@@ -14,10 +12,6 @@ namespace neko
     template <typename System>
     concept engine_system = std::is_base_of_v<singleton<System>, System>;
   }
-
-  class app_host;
-  class conf_manager;
-
 
   //
   // Core manager for all engine systems
@@ -30,11 +24,12 @@ namespace neko
 
   public:
     //
-    // Returns a reference to the applcation host
+    // Checks if a system exists
     //
-    static decltype(auto) app_host() noexcept
+    template <detail::engine_system Sys>
+    static bool good() noexcept
     {
-      return singleton<neko::app_host>::get();
+      return singleton<Sys>::good();
     }
 
     //
@@ -45,18 +40,33 @@ namespace neko
       return singleton<neko::conf_manager>::get();
     }
 
-    //
-    // Checks if a system exists
-    //
-    template <detail::engine_system Sys>
-    static bool good() noexcept
-    {
-      return singleton<Sys>::good();
-    }
-
   private:
     friend class core;
 
+    //
+    // Returns a reference to the applcation host
+    //
+    static decltype(auto) app_host() noexcept
+    {
+      return singleton<neko::app_host>::get();
+    }
+
+    //
+    // Returns a reference to the input manager
+    //
+    static decltype(auto) input() noexcept
+    {
+      return singleton<neko::input>::get();
+    }
+
+    //
+    // Returns a reference to platform input
+    //
+    static decltype(auto) platform_input() noexcept
+    {
+      return singleton<neko::platform_input>::get();
+    }
+    
     //
     // Creates a system from a set of parameters
     // The Derived template param specifies which derived class to instantiate

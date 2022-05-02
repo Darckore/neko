@@ -1,13 +1,13 @@
 #include "core/core.hpp"
-#include "managers/app_host.hpp"
-#include "managers/input.hpp"
 #include "game/base_game.hpp"
 
 #if NEK_WINDOWS
   #include "windows/window.hpp"
+  #include "windows/xinput.hpp"
   using surface_type = neko::platform::window;
+  using input_source = neko::platform::xinput;
 #else
-  static_assert(false, "Platform not supported");
+  NEK_BAD_PLATFORM
 #endif
 
 namespace neko
@@ -119,23 +119,40 @@ namespace neko
 
   // Private members
 
-  void core::run() noexcept
+  bool core::init_systems() noexcept
   {
     if (!systems::init_system<app_host, surface_type>())
     {
       logger::error("Unable to init the target graphics surface");
-      return;
+      return false;
+    }
+
+    if (!systems::init_system<platform_input, input_source>())
+    {
+      logger::error("Unable to init the input system");
+      return false;
     }
 
     if (!systems::init_system<input>())
     {
       logger::error("Unable to init the input system");
-      return;
+      return false;
     }
     
     if (!m_game.init())
     {
-      logger::error("Game init failed, shutting down");
+      logger::error("Game init failed");
+      return false;
+    }
+
+    return true;
+  }
+
+  void core::run() noexcept
+  {
+    if (!init_systems())
+    {
+      logger::error("Engine initialisation failed. Shutting down");
       return;
     }
 
@@ -161,6 +178,7 @@ namespace neko
     logger::set_severity_level(logLvl);
 
     systems::shutdown_system<input>();
+    systems::shutdown_system<platform_input>();
     systems::shutdown_system<app_host>();
     systems::shutdown_system<conf_manager>();
   }

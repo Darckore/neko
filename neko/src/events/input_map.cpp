@@ -11,7 +11,7 @@ namespace neko::evt
     #if NEK_WINDOWS
       #include "windows/windows_keycodes.inl"
     #else
-      static_assert(false, "Platform not supported");
+      NEK_BAD_PLATFORM
     #endif
     };
 
