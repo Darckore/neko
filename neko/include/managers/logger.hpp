@@ -97,6 +97,22 @@ namespace neko
       std::cout << m_buf << '\n';
 
       m_buf.clear();
+
+      if (m_stream.view().size() >= bufferSizeMax)
+      {
+        dump();
+        init_stream();
+      }
+    }
+
+    //
+    // Reserves memory for the stream
+    //
+    static void init_stream() noexcept
+    {
+      std::string buf;
+      buf.reserve(bufferSizeMax);
+      m_stream.str(std::move(buf));
     }
 
   public:
@@ -114,6 +130,8 @@ namespace neko
     //
     static void init() noexcept
     {
+      init_stream();
+
       constexpr auto initialSize = 256ull;
       m_buf.reserve(initialSize);
 
@@ -220,6 +238,11 @@ namespace neko
     }
 
   private:
+    //
+    // We'll maintain buffer size of no more than 4Kb
+    //
+    static constexpr auto bufferSizeMax = 4096ull;
+
     //
     // Log file name
     //
