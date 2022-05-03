@@ -3,11 +3,8 @@
 //
 
 #pragma once
+#include "core/managers.hpp"
 #include "core/singleton_base.hpp"
-#include "managers/sys_registry.hpp"
-#include "managers/logger.hpp"
-#include "managers/config.hpp"
-#include "managers/event.hpp"
 
 namespace neko
 {
@@ -46,7 +43,13 @@ namespace neko
 
   private:
     //
-    // Ensures all systems are up and running, when goes into the main loop
+    // Initialises all systems and ensures they are up and running
+    // Returns false on failure
+    //
+    bool init_systems() noexcept;
+
+    //
+    // Initialises systems, when goes into the main loop
     //
     void run() noexcept;
 
@@ -60,6 +63,12 @@ namespace neko
     // Shuts all systems down and exits the application
     //
     void quit() noexcept;
+
+    //
+    // Polls and dispatches raw input events
+    // Returns false if input resulted in a 'quit' signal
+    //
+    bool poll_input() noexcept;
 
   private:
     //

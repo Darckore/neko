@@ -2,9 +2,6 @@
 
 #if NEK_WINDOWS
 
-#include "managers/sys_registry.hpp"
-#include "managers/logger.hpp"
-
 namespace neko::platform
 {
   // Additional definitions
@@ -237,6 +234,10 @@ namespace neko::platform
     case WM_MOUSEMOVE:
       on_mouse(msg);
       return 0;
+
+    case WM_MOUSEWHEEL:
+      on_wheel(msg);
+      return 0;
     }
 
     return DefWindowProc(handle, msg_code, wp, lp);
@@ -363,6 +364,7 @@ namespace neko::platform
   {
     button::dispatch();
     position::dispatch();
+    wheel::dispatch();
   }
   void window::on_key(msg_wrapper msg) noexcept
   {
@@ -377,9 +379,9 @@ namespace neko::platform
     }
 
     using im = neko::evt::input_map;
-    const auto state = keyUp ? btn_evt::up : btn_evt::down;
-    const auto code = im::convert(msg.wp);
-    button::push(state, code);
+    const auto state = keyUp ? btn_evt::RELEASED : btn_evt::ENGAGED;
+    const auto code = im::keyboard_convert(msg.wp);
+    button::push(0u, state, code);
   }
   void window::on_mouse(msg_wrapper msg) noexcept
   {
@@ -390,6 +392,11 @@ namespace neko::platform
     const auto normX = static_cast<coord_type>(mouseX) / halfScreenX;
     const auto normY = static_cast<coord_type>(mouseY) / halfScreenY;
     position::push(0u, normX, normY, pos_evt::MOUSE_PTR);
+  }
+  void window::on_wheel(msg_wrapper msg) noexcept
+  {
+    const auto delta = utils::sign(GET_WHEEL_DELTA_WPARAM(msg.wp));
+    wheel::push(0u, static_cast<coord_type>(delta), wheel_evt::MOUSE_WHEEL);
   }
 }
 

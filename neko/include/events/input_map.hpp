@@ -15,6 +15,11 @@ namespace neko::evt
   {
   public:
     //
+    // Device index
+    //
+    using device_idx = std::uint32_t;
+
+    //
     // Platform scan code
     //
     using raw_code = std::uintptr_t;
@@ -25,9 +30,9 @@ namespace neko::evt
     using key_name = std::string_view;
 
     //
-    // Position source as string
+    // Position or axis source as string
     //
-    using pos_name = std::string_view;
+    using src_name = std::string_view;
 
     //
     // Codes for buttons from different types of controllers
@@ -178,11 +183,39 @@ namespace neko::evt
       KB_PAUSE,
       KB_PRINT_SCREEN,
 
+      // Gamepads and joysticks
+
+      // XBOX buttons
+      PAD_A,
+      PAD_B,
+      PAD_X,
+      PAD_Y,
+      PAD_LS,
+      PAD_RS,
+      PAD_LB,
+      PAD_RB,
+      PAD_START,
+      PAD_BACK,
+
+      // D-pad
+      PAD_UP,
+      PAD_DOWN,
+      PAD_LEFT,
+      PAD_RIGHT,
+
       // Max
       CODE_LAST
     };
-
     using enum key_codes;
+
+    //
+    // Button state
+    //
+    enum class key_state : std::uint8_t
+    {
+      RELEASED,
+      ENGAGED
+    };
 
     //
     // Source of position events (mouse, sticks, etc.)
@@ -193,24 +226,42 @@ namespace neko::evt
       MOUSE_PTR,
 
       // Gamepad sticks
-      PAD_LEFT,
-      PAD_RIGHT,
+      PAD_LSTICK,
+      PAD_RSTICK,
 
       // Joystick
       JOYSTICK,
 
       // Max
-      CODE_LAST
+      POS_SRC_LAST
     };
+    using enum position_src;
+
+    //
+    // Source of axis events (mouse, triggers, etc.)
+    //
+    enum class axis_src : std::uint8_t
+    {
+      // Mouse wheel
+      MOUSE_WHEEL,
+
+      // Gamepad triggers
+      PAD_LT,
+      PAD_RT,
+
+      // Max
+      AXIS_SRC_LAST
+    };
+    using enum axis_src;
 
   public:
     CLASS_SPECIALS_NONE(input_map);
 
   public:
     //
-    // Converts platform scan codes to neko key codes
+    // Converts platform keyboard scan codes to neko key codes
     //
-    static key_codes convert(raw_code code) noexcept;
+    static key_codes keyboard_convert(raw_code code) noexcept;
 
     //
     // Returns a string by key code
@@ -220,6 +271,11 @@ namespace neko::evt
     //
     // Returns a string by position source
     //
-    static pos_name to_string(position_src src) noexcept;
+    static src_name to_string(position_src src) noexcept;
+
+    //
+    // Returns a string by axis source
+    //
+    static src_name to_string(axis_src src) noexcept;
   };
 }

@@ -4,14 +4,14 @@ namespace neko::evt
 {
   // Public members
 
-  input_map::key_codes input_map::convert(raw_code code) noexcept
+  input_map::key_codes input_map::keyboard_convert(raw_code code) noexcept
   {
     static constexpr std::array codes{
       DEAD,
     #if NEK_WINDOWS
       #include "windows/windows_keycodes.inl"
     #else
-      static_assert(false, "Platform not supported");
+      NEK_BAD_PLATFORM
     #endif
     };
 
@@ -164,10 +164,30 @@ namespace neko::evt
 
       // Misc
       "KB_PAUSE"sv,
-      "KB_PRINT_SCREEN"sv
+      "KB_PRINT_SCREEN"sv,
+
+      // Gamepads and joysticks
+
+      // XBOX buttons
+      "PAD_A"sv,
+      "PAD_B"sv,
+      "PAD_X"sv,
+      "PAD_Y"sv,
+      "PAD_LS"sv,
+      "PAD_RS"sv,
+      "PAD_LB"sv,
+      "PAD_RB"sv,
+      "PAD_START"sv,
+      "PAD_BACK"sv,
+
+      // D-pad
+      "PAD_UP"sv,
+      "PAD_DOWN"sv,
+      "PAD_LEFT"sv,
+      "PAD_RIGHT"sv,
     };
 
-    static_assert(names.size() == static_cast<std::size_t>(key_codes::CODE_LAST),
+    static_assert(names.size() == static_cast<std::size_t>(CODE_LAST),
                   "There should be as many key names as there are key codes");
 
     const auto idx = static_cast<std::size_t>(code);
@@ -175,7 +195,7 @@ namespace neko::evt
     return names[idx];
   }
 
-  input_map::pos_name input_map::to_string(position_src src) noexcept
+  input_map::src_name input_map::to_string(position_src src) noexcept
   {
     static constexpr std::array names{
       // Mouse pointer
@@ -189,8 +209,27 @@ namespace neko::evt
       "Joystick"sv
     };
 
-    static_assert(names.size() == static_cast<std::size_t>(position_src::CODE_LAST),
+    static_assert(names.size() == static_cast<std::size_t>(POS_SRC_LAST),
                   "There should be as many names as there are position sources");
+
+    const auto idx = static_cast<std::size_t>(src);
+    NEK_ASSERT(idx < names.size());
+    return names[idx];
+  }
+
+  input_map::src_name input_map::to_string(axis_src src) noexcept
+  {
+    static constexpr std::array names{
+      // Mouse wheel
+      "Mouse wheel"sv,
+
+      // Gamepad triggers
+      "Left trigger"sv,
+      "Right trigger"sv,
+    };
+
+    static_assert(names.size() == static_cast<std::size_t>(AXIS_SRC_LAST),
+                  "There should be as many names as there are axis sources");
 
     const auto idx = static_cast<std::size_t>(src);
     NEK_ASSERT(idx < names.size());

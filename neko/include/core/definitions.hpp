@@ -4,6 +4,8 @@
 
 #pragma once
 
+#define NEK_BAD_PLATFORM static_assert(false, "Platform not supported");
+
 #if _WIN64
   #define NEK_WINDOWS 1
 #else
@@ -114,7 +116,7 @@ struct std::hash<neko::hashed_string>
 // Use it when subscribing to events to avoid such tedious things:
 // evt_sub{ this, [this](const auto& e) { on_event(e); } }
 //
-#define NEK_EVTSUB(sub_name, handler) sub_name{ this, [this](const auto& e) { handler(e); } }
+#define NEK_EVTSUB(sub_name, handler) sub_name{ this, [this](const auto& e) noexcept { handler(e); } }
 
 #ifndef NDEBUG
   //
