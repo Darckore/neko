@@ -116,7 +116,7 @@ struct std::hash<neko::hashed_string>
 // Use it when subscribing to events to avoid such tedious things:
 // evt_sub{ this, [this](const auto& e) { on_event(e); } }
 //
-#define NEK_EVTSUB(sub_name, handler) sub_name{ this, [this](const auto& e) { handler(e); } }
+#define NEK_EVTSUB(sub_name, handler) sub_name{ this, [this](const auto& e) noexcept { handler(e); } }
 
 #ifndef NDEBUG
   //

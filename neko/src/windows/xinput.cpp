@@ -73,6 +73,17 @@ namespace neko::platform
       return;
     }
 
+    auto&& padState = devState.Gamepad;
+    using utils::abs;
+
+    // Deadzone filtering
+    if (abs(padState.sThumbLX) <= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)  padState.sThumbLX = 0;
+    if (abs(padState.sThumbLY) <= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)  padState.sThumbLY = 0;
+    if (abs(padState.sThumbRX) <= XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) padState.sThumbRX = 0;
+    if (abs(padState.sThumbRY) <= XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) padState.sThumbRY = 0;
+    if (padState.bLeftTrigger  <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD)  padState.bLeftTrigger = 0;
+    if (padState.bRightTrigger <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD) padState.bRightTrigger = 0;
+
     buttons(idx, devState);
     triggers(idx, devState);
     sticks(idx, devState);
@@ -132,36 +143,87 @@ namespace neko::platform
 
   void xinput::triggers(device_idx idx, const XINPUT_STATE& cur) noexcept
   {
-    auto triggerChange = [](BYTE prev, BYTE cur)
+    auto triggerChange = [](auto prev, auto cur) noexcept
     {
-      if (cur <= XINPUT_GAMEPAD_TRIGGER_THRESHOLD || prev == cur)
+      using res_type = std::optional<coord_type>;
+      if (prev == cur)
       {
-        return coord_type{};
+        return res_type{};
       }
 
       constexpr auto triggerMax = 255;
-      return static_cast<coord_type>(cur) / triggerMax;
+      return res_type{ static_cast<coord_type>(cur) / triggerMax };
     };
 
     using enum evt::input_map::axis_src;
     const auto prevL = m_prev[idx].Gamepad.bLeftTrigger;
     const auto curL  = cur.Gamepad.bLeftTrigger;
-    if (const auto ld = triggerChange(prevL, curL); !utils::eq(ld, 0.0f))
+    if (const auto ld = triggerChange(prevL, curL))
     {
-      trigger::push(idx, ld, PAD_LT);
+      trigger::push(idx, *ld, PAD_LT);
     }
 
     const auto prevR = m_prev[idx].Gamepad.bRightTrigger;
     const auto curR  = cur.Gamepad.bRightTrigger;
-    if (const auto rd = triggerChange(prevR, curR); !utils::eq(rd, 0.0f))
+    if (const auto rd = triggerChange(prevR, curR))
     {
-      trigger::push(idx, rd, PAD_RT);
+      trigger::push(idx, *rd, PAD_RT);
     }
   }
 
   void xinput::sticks(device_idx idx, const XINPUT_STATE& cur) noexcept
   {
-    utils::unused(idx, cur);
+    auto&& prev = m_prev[idx].Gamepad;
+
+    auto stickChange = [](auto prevX, auto prevY, auto curX, auto curY, auto dz) noexcept
+    {
+      using std::max;
+      using utils::abs;
+
+      using res_type = std::optional<vec2>;
+      if (prevX == curX && prevY == curY)
+      {
+        return res_type{};
+      }
+
+      constexpr auto stickMax = 32767;
+      const auto xNorm  = max(-1.0f, static_cast<coord_type>(curX) / stickMax);
+      const auto yNorm  = max(-1.0f, static_cast<coord_type>(curY) / stickMax);
+      const auto dzNorm = static_cast<coord_type>(dz) / stickMax;
+
+      const auto absX = abs(xNorm);
+      const auto absY = abs(yNorm);
+
+      const auto x = absX < dzNorm ? 0.0f : (absX - dzNorm) * (xNorm / absX);
+      const auto y = absY < dzNorm ? 0.0f : (absY - dzNorm) * (yNorm / absY);
+      const auto invDZ = utils::inv(1.0f - dzNorm);
+
+      vec2 res{ x * invDZ, y * invDZ };
+      return res_type{ res };
+    };
+
+    using enum evt::input_map::position_src;
+    const auto prevLX = prev.sThumbLX;
+    const auto prevLY = prev.sThumbLY;
+    const auto curLX = cur.Gamepad.sThumbLX;
+    const auto curLY = cur.Gamepad.sThumbLY;
+    const auto dzL = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+    if (auto ls = stickChange(prevLX, prevLY, curLX, curLY, dzL))
+    {
+      auto [x, y] = *ls;
+      analog::push(idx, x, y, PAD_LSTICK);
+    }
+
+    const auto prevRX = prev.sThumbRX;
+    const auto prevRY = prev.sThumbRY;
+    const auto curRX = cur.Gamepad.sThumbRX;
+    const auto curRY = cur.Gamepad.sThumbRY;
+    const auto dzR = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
+    if (auto rs = stickChange(prevRX, prevRY, curRX, curRY, dzR))
+    {
+      auto [x, y] = *rs;
+      analog::push(idx, x, y, PAD_RSTICK);
+    }
   }
 }
 
