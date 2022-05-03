@@ -246,7 +246,8 @@ namespace neko::evt
       MOUSE_WHEEL,
 
       // Gamepad triggers
-      PAD_LRT,
+      PAD_LT,
+      PAD_RT,
 
       // Max
       AXIS_SRC_LAST
@@ -258,9 +259,9 @@ namespace neko::evt
 
   public:
     //
-    // Converts platform scan codes to neko key codes
+    // Converts platform keyboard scan codes to neko key codes
     //
-    static key_codes convert(raw_code code) noexcept;
+    static key_codes keyboard_convert(raw_code code) noexcept;
 
     //
     // Returns a string by key code

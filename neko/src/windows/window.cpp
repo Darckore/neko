@@ -380,7 +380,7 @@ namespace neko::platform
 
     using im = neko::evt::input_map;
     const auto state = keyUp ? btn_evt::RELEASED : btn_evt::ENGAGED;
-    const auto code = im::convert(msg.wp);
+    const auto code = im::keyboard_convert(msg.wp);
     button::push(0u, state, code);
   }
   void window::on_mouse(msg_wrapper msg) noexcept

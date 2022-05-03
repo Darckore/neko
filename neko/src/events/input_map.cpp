@@ -4,7 +4,7 @@ namespace neko::evt
 {
   // Public members
 
-  input_map::key_codes input_map::convert(raw_code code) noexcept
+  input_map::key_codes input_map::keyboard_convert(raw_code code) noexcept
   {
     static constexpr std::array codes{
       DEAD,
@@ -224,7 +224,8 @@ namespace neko::evt
       "Mouse wheel"sv,
 
       // Gamepad triggers
-      "Triggers"sv
+      "Left trigger"sv,
+      "Right trigger"sv,
     };
 
     static_assert(names.size() == static_cast<std::size_t>(AXIS_SRC_LAST),

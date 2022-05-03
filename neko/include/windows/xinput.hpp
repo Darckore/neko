@@ -36,7 +36,7 @@ namespace neko::platform
     // Triggers
     //
     using trigger_evt = evt::axis;
-    using triggers    = event<trigger_evt>;
+    using trigger     = event<trigger_evt>;
 
     //
     // Index type for connected devices
@@ -52,6 +52,11 @@ namespace neko::platform
     // Flags indicating connected ports
     //
     using port_states = std::bitset<maxConnections>;
+
+    //
+    // States of gamepads
+    //
+    using pad_states = std::array<XINPUT_STATE, maxConnections>;
 
   public:
     CLASS_SPECIALS_NONE_CUSTOM(xinput);
@@ -69,6 +74,11 @@ namespace neko::platform
 
   private:
     //
+    // Dispatches all pending events
+    //
+    void dispatch_events() noexcept;
+
+    //
     // Detects connected devices
     //
     void detect_devices() noexcept;
@@ -83,6 +93,21 @@ namespace neko::platform
     //
     void refresh_all() noexcept;
 
+    //
+    // Checks buttons for state change
+    //
+    void buttons(device_idx idx, const XINPUT_STATE& cur) noexcept;
+
+    //
+    // Checks triggers for state change
+    //
+    void triggers(device_idx idx, const XINPUT_STATE& cur) noexcept;
+
+    //
+    // Checks analog sticks for state change
+    //
+    void sticks(device_idx idx, const XINPUT_STATE& cur) noexcept;
+
   private:
     //
     // Clocks used to decide whether or not we should perform device detection
@@ -93,6 +118,11 @@ namespace neko::platform
     // Port states
     //
     port_states m_ports{};
+
+    //
+    // Previous states of gamepads
+    //
+    pad_states m_prev{};
   };
 }
 
