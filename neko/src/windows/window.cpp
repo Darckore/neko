@@ -208,7 +208,7 @@ namespace neko::platform
     switch (msg_code)
     {
     case WM_SIZE:
-      m_size = { GET_X_LPARAM(lp), GET_Y_LPARAM(lp) };
+      m_info.size = { GET_X_LPARAM(lp), GET_Y_LPARAM(lp) };
       return 0;
 
     case WM_DESTROY:
@@ -257,14 +257,14 @@ namespace neko::platform
 
   window::operator bool() const noexcept
   {
-    return static_cast<bool>(m_handle);
+    return static_cast<bool>(m_info.handle);
   }
 
   // Public members
 
   void window::close() noexcept
   {
-    if (!m_handle)
+    if (!m_info.handle)
     {
       return;
     }
@@ -272,12 +272,12 @@ namespace neko::platform
     NEK_TRACE("Closing window");
     using detail::wnd_helper;
 
-    SetWindowLongPtr(m_handle, GWLP_USERDATA, 0);
+    SetWindowLongPtr(m_info.handle, GWLP_USERDATA, 0);
 
     auto inst_handle = GetModuleHandle(0);
-    DestroyWindow(m_handle);
+    DestroyWindow(m_info.handle);
 
-    m_handle = 0;
+    m_info.handle = 0;
     UnregisterClass(wnd_helper::windowClass.data(), inst_handle);
   }
 
@@ -300,14 +300,9 @@ namespace neko::platform
     return msg.message != WM_QUIT;
   }
 
-  window::dimensions window::size() const noexcept
+  host_info window::info() const noexcept
   {
-    return m_size;
-  }
-
-  window::handle_type window::handle() const noexcept
-  {
-    return m_handle;
+    return m_info;
   }
 
   // Private members
@@ -332,7 +327,7 @@ namespace neko::platform
 
     NEK_TRACE("Window class registered");
     auto [posX, posY, width, height] = wnd_helper::calc_size();
-    m_size = { width, height };
+    m_info.size = { width, height };
     NEK_TRACE("Window size: [{}, {}]", width, height);
     auto handle = CreateWindow(
       className,
@@ -356,7 +351,10 @@ namespace neko::platform
 
     ShowWindow(handle, SW_SHOW);
     UpdateWindow(handle);
-    m_handle = reinterpret_cast<handle_type>(handle);
+
+    using handle_type = host_info::handle_type;
+    m_info.handle = reinterpret_cast<handle_type>(handle);
+    
     NEK_TRACE("Done init window");
   }
 
@@ -385,8 +383,8 @@ namespace neko::platform
   }
   void window::on_mouse(msg_wrapper msg) noexcept
   {
-    const auto halfScreenX = m_size.width / 2;
-    const auto halfScreenY = m_size.height / 2;
+    const auto halfScreenX = m_info.size.width / 2;
+    const auto halfScreenY = m_info.size.height / 2;
     const auto mouseX = GET_X_LPARAM(msg.lp) - halfScreenX;
     const auto mouseY = halfScreenY - GET_Y_LPARAM(msg.lp);
     const auto normX = static_cast<coord_type>(mouseX) / halfScreenX;

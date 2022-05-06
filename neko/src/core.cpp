@@ -127,7 +127,8 @@ namespace neko
       return false;
     }
 
-    if (!systems::init_system<renderer>() || !systems::renderer())
+    if (   !systems::init_system<renderer>(systems::app_host().info())
+        || !systems::renderer())
     {
       logger::error("Unable to init the graphics system");
       return false;

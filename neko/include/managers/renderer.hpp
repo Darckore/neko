@@ -7,6 +7,13 @@
 
 namespace neko
 {
+  namespace platform
+  {
+    struct host_info;
+
+    class pipeline;
+  }
+
   //
   // Engine renderer
   // Provides general interface to implementation-defined graphics API
@@ -17,7 +24,7 @@ namespace neko
     friend class singleton<renderer>;
 
   public:
-    CLASS_SPECIALS_NONE_CUSTOM(renderer);
+    CLASS_SPECIALS_NONE(renderer);
 
     ~renderer() noexcept;
 
@@ -28,7 +35,8 @@ namespace neko
     explicit operator bool() const noexcept;
 
   private:
-    renderer() noexcept;
+    using host_info = platform::host_info;
+    explicit renderer(const host_info& info) noexcept;
 
   public:
     //
@@ -37,6 +45,8 @@ namespace neko
     void render() noexcept;
 
   private:
+    using pipeline = neko::pointer<platform::pipeline>;
 
+    pipeline m_pipeline{};
   };
 }
