@@ -7,13 +7,13 @@
 
 namespace neko
 {
-  namespace platform
-  {
-    struct host_info;
+  class renderer;
+}
 
-    class pipeline;
-  }
+#include "graphics/pipeline.hpp"
 
+namespace neko
+{
   //
   // Engine renderer
   // Provides general interface to implementation-defined graphics API
@@ -45,8 +45,14 @@ namespace neko
     void render() noexcept;
 
   private:
-    using pipeline = neko::pointer<platform::pipeline>;
+    //
+    // Initialises the rendering pipeline according to rendering settings
+    //
+    void init_pipeline(const host_info& info) noexcept;
 
-    pipeline m_pipeline{};
+  private:
+    using pipeline = platform::pipeline;
+
+    platform::pipeline_ptr m_pipeline{};
   };
 }
