@@ -53,6 +53,9 @@ namespace neko
   private:
     using pipeline = platform::pipeline;
 
+    //
+    // Platform-specific pipeline object
+    //
     platform::pipeline_ptr m_pipeline{};
   };
 }

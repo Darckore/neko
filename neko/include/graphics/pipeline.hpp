@@ -1,3 +1,7 @@
+//
+// Platform pipeline
+//
+
 #pragma once
 
 namespace neko::platform
@@ -13,6 +17,10 @@ namespace neko::platform
 
   using pipeline_ptr = neko::pointer<pipeline>;
 
+  //
+  // Interface for specific platform-dependent
+  // pipeline implementations (DirectX, Vulkan, etc.)
+  //
   class pipeline
   {
   public:
@@ -26,6 +34,9 @@ namespace neko::platform
   private:
     friend class renderer;
 
+    //
+    // Creates a new instance using app host information
+    //
     template <detail::pipeline_imp Pipeline>
     static auto create(const host_info& info) noexcept
     {
@@ -33,6 +44,9 @@ namespace neko::platform
     }
 
   public:
+    //
+    // Checks whether the pipeline is in valid state
+    //
     virtual bool good() noexcept = 0;
   };
 }

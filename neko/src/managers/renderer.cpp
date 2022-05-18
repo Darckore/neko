@@ -14,6 +14,7 @@ namespace neko
   renderer::~renderer() noexcept
   {
     logger::note("Shutting down rendering pipeline");
+    m_pipeline.reset();
   }
 
   renderer::renderer(const host_info& info) noexcept
