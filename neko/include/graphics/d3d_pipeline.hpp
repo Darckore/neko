@@ -84,6 +84,16 @@ namespace neko::platform
       //
       void shutdown() noexcept;
 
+      //
+      // Initialises debug mode
+      //
+      bool enable_dbg() noexcept;
+
+      //
+      // Initialises D3D adapter
+      //
+      bool create_device() noexcept;
+
     private:
       //
       // App host information
@@ -91,7 +101,6 @@ namespace neko::platform
       const host_info& m_host;
 
       com_ptr<IDXGIFactory4>               m_factory{};
-      com_ptr<IDXGIAdapter4>               m_adapter{};
       com_ptr<ID3D12Device2>               m_device{};
       com_ptr<ID3D12CommandQueue>          m_cmdQueue{};
       com_ptr<IDXGISwapChain4>             m_swapChain{};

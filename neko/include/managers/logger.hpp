@@ -270,7 +270,7 @@ namespace neko
     #ifndef NDEBUG
       dbg
     #else
-      err
+      msg
     #endif
     };
   };
