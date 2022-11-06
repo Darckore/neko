@@ -25,6 +25,7 @@ namespace neko::platform
       if (!val)
       {
         logger::error(errMsg);
+        return false;
       }
       return true;
     }
