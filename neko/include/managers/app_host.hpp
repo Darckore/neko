@@ -53,6 +53,6 @@ namespace neko
     //
     // Returns host information
     //
-    virtual platform::host_info info() const noexcept = 0;
+    virtual const platform::host_info& info() const noexcept = 0;
   };
 }

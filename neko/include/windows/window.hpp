@@ -118,7 +118,7 @@ namespace neko::platform
     //
     // Returns window width and height
     //
-    virtual host_info info() const noexcept override;
+    virtual const host_info& info() const noexcept override;
 
   private:
     //

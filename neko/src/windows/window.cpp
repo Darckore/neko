@@ -300,7 +300,7 @@ namespace neko::platform
     return msg.message != WM_QUIT;
   }
 
-  host_info window::info() const noexcept
+  const host_info& window::info() const noexcept
   {
     return m_info;
   }

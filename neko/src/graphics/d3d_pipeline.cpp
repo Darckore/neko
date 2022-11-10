@@ -8,7 +8,7 @@
 // 
 // This macro makes the enclosing function return false on failure
 //
-#define ENSURE(val, msg) { \
+#define D3D_ENSURE(val, msg) { \
   if(!ensure_impl(val, msg)) {\
     return false; \
   }\
@@ -92,7 +92,7 @@ namespace neko::platform
     #ifndef NDEBUG
       NEK_TRACE("Initialising D3D debug mode");
       com_ptr<ID3D12Debug> dbg;
-      ENSURE(D3D12GetDebugInterface(IID_PPV_ARGS(&dbg)), "D3D debug mode failed");
+      D3D_ENSURE(D3D12GetDebugInterface(IID_PPV_ARGS(&dbg)), "D3D debug mode failed");
       dbg->EnableDebugLayer();
     #endif
       return true;
@@ -110,7 +110,7 @@ namespace neko::platform
     #endif
       };
 
-      ENSURE(CreateDXGIFactory2(flags, IID_PPV_ARGS(&m_factory)), "D3D factory failed");
+      D3D_ENSURE(CreateDXGIFactory2(flags, IID_PPV_ARGS(&m_factory)), "D3D factory failed");
 
       auto vmem = 0ull;
       com_ptr<IDXGIAdapter1> adapter{};
@@ -142,11 +142,11 @@ namespace neko::platform
       if (!hwAdapterFound)
       {
         logger::warning("Failed to find a suitable hardware D3D adapter. Falling back to WARP");
-        ENSURE(m_factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)), "Couldn't init WARP adapter");
+        D3D_ENSURE(m_factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)), "Couldn't init WARP adapter");
       }
 
       NEK_TRACE("Initialising D3D device");
-      ENSURE(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_device)), "D3D device failed");
+      D3D_ENSURE(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_device)), "D3D device failed");
 
     #ifndef NDEBUG
       if (com_ptr<ID3D12InfoQueue> infoQueue; SUCCEEDED(m_device.As(&infoQueue)))
