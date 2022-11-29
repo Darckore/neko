@@ -61,6 +61,7 @@ namespace neko::config
     value& operator=(detail::val_type auto v) noexcept
     {
       m_val = v;
+      return *this;
     }
 
     //
