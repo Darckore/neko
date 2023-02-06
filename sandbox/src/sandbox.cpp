@@ -1,14 +1,10 @@
 #include "app/sandbox.hpp"
 
-namespace neko_game
+// The mainest thing ever
+NEK_REGISTER_GAME(sanbox_thing::sandbox)
+
+namespace sanbox_thing
 {
-  // The main thing ever
-
-  game_ptr make_game()
-  {
-    return std::make_unique<sandbox>();
-  }
-
   // Special members
 
   sandbox::~sandbox() noexcept = default;

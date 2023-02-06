@@ -159,3 +159,25 @@ namespace neko
   //
   [[noreturn]] void on_terminate() noexcept;
 }
+
+// Game creation stuff
+namespace neko
+{
+  class base_game;
+
+  namespace detail
+  {
+    using game_ptr = pointer<base_game>;
+
+    template <typename Game>
+    concept derived_game = std::is_base_of_v<base_game, Game>;
+  }
+
+  extern detail::game_ptr make_game() noexcept;
+}
+
+#define NEK_REGISTER_GAME(game_class) namespace neko { \
+  detail::game_ptr make_game() noexcept { \
+    static_assert(detail::derived_game<game_class>, "Must inherit from neko::base_game");\
+    return detail::game_ptr{ new (std::nothrow) game_class{} };\
+}}

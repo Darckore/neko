@@ -1,7 +1,7 @@
 #pragma once
 #include "core/entry.hpp"
 
-namespace neko_game
+namespace sanbox_thing
 {
   class sandbox : public neko::base_game
   {
@@ -17,6 +17,4 @@ namespace neko_game
     virtual void on_update(time_type dt) noexcept override;
     virtual void on_render() noexcept override;
   };
-
-  game_ptr make_game();
 }
