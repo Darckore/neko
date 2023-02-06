@@ -21,7 +21,7 @@
 //    }
 //
 //    mygame.cpp
-//    NEK_REGISTER_GAME(something::mygame)
+//    NEK_REGISTER_GAME(something::mygame, "path/to/roor/config.cfg")
 //
 //    namespace something { definitions }
 //

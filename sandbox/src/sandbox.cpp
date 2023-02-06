@@ -1,7 +1,7 @@
 #include "app/sandbox.hpp"
 
 // The mainest thing ever
-NEK_REGISTER_GAME(sanbox_thing::sandbox)
+NEK_REGISTER_GAME(sanbox_thing::sandbox, "data/root.cfg")
 
 namespace sanbox_thing
 {

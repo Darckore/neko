@@ -23,7 +23,7 @@ namespace neko
     const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Initialising the game");
     logger::set_severity_level(logLvl);
-    if (!core::create<core>(game, "data/root.cfg"))
+    if (!core::create<core>(game, root_config_path()))
     {
       logger::error("Engine initialisation failed");
       return;
