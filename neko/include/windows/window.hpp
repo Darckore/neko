@@ -38,7 +38,7 @@ namespace neko::platform
     //
     // Handle
     //
-    HWND handle{};
+    handle_type handle{};
   };
 
   //
