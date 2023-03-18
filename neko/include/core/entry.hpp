@@ -39,7 +39,6 @@ int main()
   auto game = neko::make_game();
   if (!game)
   {
-    neko::logger::error("Unable to allocate memory for the game. Shutting down");
     return -1;
   }
 
