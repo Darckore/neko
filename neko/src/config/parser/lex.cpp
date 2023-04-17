@@ -118,7 +118,7 @@ namespace neko::config
   void lex::discard() noexcept
   {
     m_from = m_file.end();
-    m_to   = m_file.end();
+    m_to   = m_from;
   }
 
   // Private members

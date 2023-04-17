@@ -6,6 +6,7 @@
 #include "managers/app_host.hpp"
 #include "managers/platform_input.hpp"
 #include "managers/input.hpp"
+#include "managers/renderer.hpp"
 
 // Add new managers here
 

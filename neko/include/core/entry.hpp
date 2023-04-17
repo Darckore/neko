@@ -3,24 +3,44 @@
 // Applications must include this instead of defining
 // their own main entry point
 // 
-// The make_game function should be defined in
-// namespace neko_game
-// It must return an std::unique_ptr to a class derived
-// from neko::base_game
+// The make_game function should be defined by using the
+// NEK_REGISTER_GAME macro
+// Use it outside of any namespace in a cpp file and specify
+// a fully qualified name of the derived class as its parameter
+//
+// -------------------------------------------------------------
+// Example:
+//
+//    mygame.h:
+//
+//    #include "core/entry.hpp"
+//
+//    namespace something
+//    {
+//       class mygame : public neko::base_game { ... };
+//    }
+//
+//    mygame.cpp
+//    NEK_REGISTER_GAME(something::mygame, "path/to/roor/config.cfg")
+//
+//    namespace something { definitions }
+//
+// -------------------------------------------------------------
 //
 
 #pragma once
 #include "core/definitions.hpp"
 #include "game/base_game.hpp"
 
-namespace neko_game
-{
-  extern game_ptr make_game();
-}
-
 int main()
 {
   std::set_terminate(neko::on_terminate);
-  auto game = neko_game::make_game();
+  
+  auto game = neko::make_game();
+  if (!game)
+  {
+    return -1;
+  }
+
   return 0;
 }

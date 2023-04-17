@@ -7,6 +7,14 @@
 
 namespace neko
 {
+  namespace platform
+  {
+    //
+    // Platform-specific host information
+    //
+    struct host_info;
+  }
+
   //
   // Abstract class representing the application host
   // Platform-dependent inherited windows implement the details
@@ -38,13 +46,13 @@ namespace neko
   public:
     //
     // Called every frame
-    // Returns false is the application needs to close
+    // Returns false if the application needs to close
     //
     virtual bool update() noexcept = 0;
     
     //
-    // Returns host width and height
+    // Returns host information
     //
-    virtual dimensions size() const noexcept = 0;
+    virtual const platform::host_info& info() const noexcept = 0;
   };
 }

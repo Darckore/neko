@@ -18,6 +18,29 @@ namespace neko::platform
     struct wnd_helper;
   }
 
+  struct host_info
+  {
+    //
+    // Window dimensions
+    //
+    using dimensions = app_host::dimensions;
+
+    //
+    // Windows handle
+    //
+    using handle_type   = HWND;
+
+    //
+    // Width and height
+    //
+    dimensions size{};
+
+    //
+    // Handle
+    //
+    handle_type handle{};
+  };
+
   //
   // Window specific to the Windows platform
   //
@@ -28,11 +51,6 @@ namespace neko::platform
     // Return type for the window procedure
     //
     using proc_result   = std::intptr_t;
-
-    //
-    // Windows handle
-    //
-    using handle_type   = HWND;
 
   private:
     //
@@ -100,12 +118,7 @@ namespace neko::platform
     //
     // Returns window width and height
     //
-    virtual dimensions size() const noexcept override;
-
-    //
-    // Returns window handle
-    //
-    handle_type handle() const noexcept;
+    virtual const host_info& info() const noexcept override;
 
   private:
     //
@@ -135,14 +148,9 @@ namespace neko::platform
 
   private:
     //
-    // Window handle
+    // Window information
     //
-    handle_type m_handle{};
-
-    //
-    // Window width and height
-    //
-    dimensions  m_size{};
+    host_info m_info{};
   };
 }
 

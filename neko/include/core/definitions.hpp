@@ -90,6 +90,17 @@ namespace neko
 
   using path_type = fsys::path;
 
+  namespace detail
+  {
+    template <typename T>
+    concept path_initable_from = std::is_constructible_v<path_type, T>;
+  }
+
+  //
+  // Root configuration path. Defined in apps
+  //
+  extern const path_type& root_config_path() noexcept;
+
   //
   // Hasher for std::filesystem::path
   //
@@ -158,4 +169,38 @@ namespace neko
   // This one will ensure we shut down gracefully
   //
   [[noreturn]] void on_terminate() noexcept;
+}
+
+//
+// Game creation stuff
+//
+namespace neko
+{
+  class base_game;
+
+  namespace detail
+  {
+    using game_ptr = pointer<base_game>;
+
+    template <typename Game>
+    concept derived_game = std::is_base_of_v<base_game, Game>;
+  }
+
+  extern detail::game_ptr make_game() noexcept;
+}
+
+//
+// Registers the game class and associates it with a configuration file
+// located by the specified path
+//
+#define NEK_REGISTER_GAME(game_class, cfg_path) namespace neko { \
+  detail::game_ptr make_game() noexcept { \
+    static_assert(detail::derived_game<game_class>, "Must inherit from neko::base_game");\
+    return detail::game_ptr{ new (std::nothrow) game_class{} };\
+  }\
+  const path_type& root_config_path() noexcept { \
+    static_assert(detail::path_initable_from<decltype(cfg_path)>, "Must be convertible to std::filesystem::path");\
+    static path_type rootCfg { cfg_path };\
+    return rootCfg;\
+  }\
 }

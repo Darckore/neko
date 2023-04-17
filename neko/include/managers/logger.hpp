@@ -74,7 +74,7 @@ namespace neko
       try
       {
         prologue(lvl);
-        std::format_to(std::back_inserter(m_buf), fmt, std::forward<Args>(args)...);
+        std::vformat_to(std::back_inserter(m_buf), fmt, std::make_format_args(std::forward<Args>(args)...));
       }
       catch (std::format_error& e)
       {
@@ -270,7 +270,7 @@ namespace neko
     #ifndef NDEBUG
       dbg
     #else
-      err
+      msg
     #endif
     };
   };

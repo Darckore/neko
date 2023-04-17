@@ -40,6 +40,14 @@ namespace neko
       return singleton<neko::conf_manager>::get();
     }
 
+    //
+    // Returns a reference to the renderer
+    //
+    static decltype(auto) renderer() noexcept
+    {
+      return singleton<neko::renderer>::get();
+    }
+
   private:
     friend class core;
 

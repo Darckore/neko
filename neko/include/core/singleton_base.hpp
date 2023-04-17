@@ -18,7 +18,9 @@ namespace neko
 
   public:
     CLASS_SPECIALS_NONE_CUSTOM(singleton);
-    
+
+    virtual ~singleton() noexcept = default;
+
   protected:
     singleton() = default;
 

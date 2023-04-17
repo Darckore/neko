@@ -78,16 +78,4 @@ namespace neko
     //
     void quit() noexcept;
   };
-
-}
-
-namespace neko_game
-{
-  using game_ptr = neko::pointer<neko::base_game>;
-
-  //
-  // Creates the game
-  // User games must provide implementation
-  //
-  game_ptr make_game();
 }

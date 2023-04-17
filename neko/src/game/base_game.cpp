@@ -47,6 +47,7 @@ namespace neko
   void base_game::render() noexcept
   {
     on_render();
+    systems::renderer().render();
   }
 
   // Protected members

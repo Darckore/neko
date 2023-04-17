@@ -23,7 +23,7 @@ namespace neko
     const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Initialising the game");
     logger::set_severity_level(logLvl);
-    if (!core::create<core>(game, "data/root.cfg"))
+    if (!core::create<core>(game, root_config_path()))
     {
       logger::error("Engine initialisation failed");
       return;
@@ -127,6 +127,13 @@ namespace neko
       return false;
     }
 
+    if (   !systems::init_system<renderer>(systems::app_host().info())
+        || !systems::renderer())
+    {
+      logger::error("Unable to init the graphics system");
+      return false;
+    }
+    
     if (!systems::init_system<platform_input, input_source>())
     {
       logger::error("Unable to init the input system");
@@ -138,7 +145,7 @@ namespace neko
       logger::error("Unable to init the input system");
       return false;
     }
-    
+
     if (!m_game.init())
     {
       logger::error("Game init failed");
@@ -164,6 +171,8 @@ namespace neko
     while (poll_input())
     {
       m_game.update({});
+
+      m_game.render();
     }
   }
   void core::quit() noexcept
@@ -174,6 +183,7 @@ namespace neko
 
     systems::shutdown_system<input>();
     systems::shutdown_system<platform_input>();
+    systems::shutdown_system<renderer>();
     systems::shutdown_system<app_host>();
     systems::shutdown_system<conf_manager>();
   }
