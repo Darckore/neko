@@ -75,7 +75,7 @@ namespace neko
     }
 
     on_exit();
-    std::_Exit(-1);
+    std::exit(-1);
   }
 }
 
