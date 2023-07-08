@@ -6,7 +6,7 @@
 #include "graphics/pipeline.hpp"
 
 #if NEK_WINDOWS
-  #include "windows/window.hpp"
+  #include "platform/windows/window.hpp"
   #include "platform/support/directx/d3d12.h"
   #include "platform/support/directx/d3dx12.h"
   #include <dxgi1_6.h>

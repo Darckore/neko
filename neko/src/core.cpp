@@ -2,8 +2,8 @@
 #include "game/base_game.hpp"
 
 #if NEK_WINDOWS
-  #include "windows/window.hpp"
-  #include "windows/xinput.hpp"
+  #include "platform/windows/window.hpp"
+  #include "platform/windows/xinput.hpp"
   using surface_type = neko::platform::window;
   using input_source = neko::platform::xinput;
 #else

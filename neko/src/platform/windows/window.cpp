@@ -1,4 +1,4 @@
-#include "windows/window.hpp"
+#include "platform/windows/window.hpp"
 
 #if NEK_WINDOWS
 
