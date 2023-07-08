@@ -17,9 +17,6 @@ namespace neko
   //
   void on_startup(base_game& game) noexcept
   {
-    logger::init();
-    NEK_TRACE("Logger ready");
-
     const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Initialising the game");
     logger::set_severity_level(logLvl);
@@ -75,7 +72,6 @@ namespace neko
     }
 
     on_exit();
-    std::exit(-1);
   }
 }
 

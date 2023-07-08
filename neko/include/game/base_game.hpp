@@ -67,12 +67,6 @@ namespace neko
 
   protected:
     //
-    // Starts the engine
-    // User game's constructor must call this as the last action
-    //
-    void run() noexcept;
-
-    //
     // Shuts the engine down
     // User games must call this to exit
     //

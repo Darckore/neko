@@ -24,7 +24,7 @@ namespace neko
     //
     // Key into config map
     //
-    using key_type   = hashed_string;
+    using key_type   = utils::hashed_string;
 
     //
     // Container for a config file
