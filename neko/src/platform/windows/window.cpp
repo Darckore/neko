@@ -21,7 +21,7 @@ namespace neko::platform
       //
       // Checks if the message is one of the given kinds
       //
-      template <utils::detail::integer ...Args>
+      template <utils::integer ...Args>
       constexpr bool is(Args ...args) const noexcept
       {
         using ct = std::common_type_t<decltype(msg_code), Args...>;
