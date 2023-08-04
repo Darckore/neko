@@ -12,7 +12,6 @@ namespace sanbox_thing
   sandbox::sandbox() noexcept
   {
     NEK_TRACE("Sandbox go");
-    run();
   }
 
   // Private members

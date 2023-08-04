@@ -52,10 +52,6 @@ namespace neko
 
   // Protected members
 
-  void base_game::run() noexcept
-  {
-    core::startup();
-  }
   void base_game::quit() noexcept
   {
     core::shutdown();

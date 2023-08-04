@@ -1,4 +1,4 @@
-#include "windows/xinput.hpp"
+#include "platform/windows/xinput.hpp"
 
 #if NEK_WINDOWS
 

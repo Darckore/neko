@@ -34,13 +34,18 @@
 
 int main()
 {
-  std::set_terminate(neko::on_terminate);
-  
+  utils::set_terminate(-1, neko::on_terminate);
+  neko::logger::init();
+  NEK_TRACE("Logger ready");
+
   auto game = neko::make_game();
   if (!game)
   {
+    neko::logger::error("Game creation failed");
     return -1;
   }
+
+  neko::core::startup();
 
   return 0;
 }

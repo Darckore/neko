@@ -42,50 +42,9 @@ namespace neko
   template <typename T>
   using pointer = std::unique_ptr<T>;
 
-  //
-  // A hashed string representation. Contains a string's hash code,
-  // can be used as an 'id' of sorts
-  //
-  class hashed_string
-  {
-  public:
-    using hash_type = utils::detail::max_int_t;
-
-  public:
-    CLASS_SPECIALS_ALL_CUSTOM(hashed_string);
-
-    constexpr hashed_string() noexcept = default;
-
-    constexpr hashed_string(std::string_view str) noexcept :
-      m_hash{ utils::hash(str) }
-    {}
-
-    constexpr hashed_string(const char* str) noexcept :
-      hashed_string{ std::string_view{ str } }
-    {}
-
-    constexpr hashed_string(const char* str, std::size_t len) noexcept :
-      hashed_string{ std::string_view{ str, len } }
-    {}
-
-    constexpr hashed_string(const std::string& str) noexcept :
-      hashed_string{ std::string_view{ str } }
-    {}
-
-    constexpr auto operator*() const noexcept
-    {
-      return m_hash;
-    }
-
-    constexpr bool operator==(const hashed_string& other) const noexcept = default;
-
-  private:
-    hash_type m_hash{};
-  };
-
   [[nodiscard]] constexpr auto operator"" _nhs(const char* s, std::size_t len) noexcept
   {
-    return hashed_string{ s, len };
+    return utils::hashed_string{ s, len };
   }
 
   using path_type = fsys::path;
@@ -112,15 +71,6 @@ namespace neko
     }
   };
 }
-
-template <>
-struct std::hash<neko::hashed_string>
-{
-  constexpr auto operator()(const neko::hashed_string& s) const noexcept
-  {
-    return *s;
-  }
-};
 
 //
 // Initialisation thing for lambdas calling class members.
@@ -168,7 +118,7 @@ namespace neko
   // we might run into hard crashes if something goes terribly wrong
   // This one will ensure we shut down gracefully
   //
-  [[noreturn]] void on_terminate() noexcept;
+  void on_terminate() noexcept;
 }
 
 //

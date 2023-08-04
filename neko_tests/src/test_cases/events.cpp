@@ -162,7 +162,7 @@ namespace neko_tests
   {
     struct ev4
     {
-      neko::hashed_string s{ "neko" };
+      utils::hashed_string s{ "neko" };
     };
 
     struct ev4_src
@@ -183,7 +183,7 @@ namespace neko_tests
     struct ev4_consumer
     {
       inline static auto cnt = 0;
-      static constexpr neko::hashed_string str{ "neko" };
+      static constexpr utils::hashed_string str{ "neko" };
       using ev = ev4;
       ev4_consumer() noexcept :
         sub{ this, [this](const auto& e){ on_ev(e); }}

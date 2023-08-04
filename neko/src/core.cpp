@@ -2,8 +2,8 @@
 #include "game/base_game.hpp"
 
 #if NEK_WINDOWS
-  #include "windows/window.hpp"
-  #include "windows/xinput.hpp"
+  #include "platform/windows/window.hpp"
+  #include "platform/windows/xinput.hpp"
   using surface_type = neko::platform::window;
   using input_source = neko::platform::xinput;
 #else
@@ -17,9 +17,6 @@ namespace neko
   //
   void on_startup(base_game& game) noexcept
   {
-    logger::init();
-    NEK_TRACE("Logger ready");
-
     const auto logLvl = logger::set_severity_level(logger::msg);
     logger::note("Initialising the game");
     logger::set_severity_level(logLvl);
@@ -75,7 +72,6 @@ namespace neko
     }
 
     on_exit();
-    std::_Exit(-1);
   }
 }
 

@@ -9,7 +9,7 @@ namespace neko::evt
     static constexpr std::array codes{
       DEAD,
     #if NEK_WINDOWS
-      #include "windows/windows_keycodes.inl"
+      #include "platform/windows/windows_keycodes.inl"
     #else
       NEK_BAD_PLATFORM
     #endif
